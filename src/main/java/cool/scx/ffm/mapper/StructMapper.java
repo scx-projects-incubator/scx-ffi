@@ -1,10 +1,10 @@
 package cool.scx.ffm.mapper;
 
 import cool.scx.ffm.type.Struct;
-import cool.scx.reflect.AccessModifier;
-import cool.scx.reflect.ClassInfo;
-import cool.scx.reflect.FieldInfo;
-import cool.scx.reflect.ScxReflect;
+import dev.scx.reflect.AccessModifier;
+import dev.scx.reflect.ClassInfo;
+import dev.scx.reflect.FieldInfo;
+import dev.scx.reflect.ScxReflect;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemoryLayout;

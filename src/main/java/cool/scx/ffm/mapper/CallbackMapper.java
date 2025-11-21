@@ -1,8 +1,8 @@
 package cool.scx.ffm.mapper;
 
 import cool.scx.ffm.type.Callback;
-import cool.scx.reflect.ClassInfo;
-import cool.scx.reflect.ScxReflect;
+import dev.scx.reflect.ClassInfo;
+import dev.scx.reflect.ScxReflect;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.FunctionDescriptor;
