@@ -11,20 +11,20 @@
     </parent>
 
     <groupId>cool.scx</groupId>
-    <artifactId>scx-ffm</artifactId>
+    <artifactId>scx-ffi</artifactId>
     <version>4.5.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>SCX FFM</name>
+    <name>SCX FFI</name>
     <description>
-        SCX FFM
+        SCX FFI
     </description>
-    <url>https://github.com/scx-projects/scx-ffm</url>
+    <url>https://github.com/scx-projects/scx-ffi</url>
 
     <licenses>
         <license>
             <name>MIT License</name>
-            <url>https://github.com/scx-projects/scx-ffm/blob/master/LICENSE</url>
+            <url>https://github.com/scx-projects/scx-ffi/blob/master/LICENSE</url>
         </license>
     </licenses>
 
@@ -37,9 +37,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/scx-projects/scx-ffm.git</connection>
-        <developerConnection>scm:git:https://github.com/scx-projects/scx-ffm.git</developerConnection>
-        <url>https://github.com/scx-projects/scx-ffm</url>
+        <connection>scm:git:https://github.com/scx-projects/scx-ffi.git</connection>
+        <developerConnection>scm:git:https://github.com/scx-projects/scx-ffi.git</developerConnection>
+        <url>https://github.com/scx-projects/scx-ffi</url>
     </scm>
 
     <build>
@@ -93,19 +93,5 @@
         <testng.version>7.11.0</testng.version>
 
     </properties>
-
-    <repositories>
-        <repository>
-            <name>Central Portal Snapshots</name>
-            <id>central-portal-snapshots</id>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
 </project>
