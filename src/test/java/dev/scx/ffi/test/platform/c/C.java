@@ -1,6 +1,6 @@
 package dev.scx.ffi.test.platform.c;
 
-import dev.scx.ffi.ScxFFM;
+import dev.scx.ffi.ScxFFI;
 
 /// 提供一些 C 标准的接口
 ///
@@ -8,7 +8,7 @@ import dev.scx.ffi.ScxFFM;
 /// @version 0.0.1
 public interface C {
 
-    C C = ScxFFM.ffmProxy(C.class);
+    C C = ScxFFI.createFFI(C.class);
 
     long strlen(String str);
 

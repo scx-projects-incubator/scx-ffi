@@ -1,6 +1,6 @@
 package dev.scx.ffi.test.platform.win32;
 
-import dev.scx.ffi.ScxFFM;
+import dev.scx.ffi.ScxFFI;
 import dev.scx.ffi.mapper.IntMapper;
 
 import java.lang.foreign.MemorySegment;
@@ -11,7 +11,7 @@ import java.lang.foreign.MemorySegment;
 /// @version 0.0.1
 public interface Kernel32 {
 
-    Kernel32 KERNEL32 = ScxFFM.ffmProxy("kernel32", Kernel32.class);
+    Kernel32 KERNEL32 = ScxFFI.createFFI(Kernel32.class, "kernel32");
 
     // https://learn.microsoft.com/zh-cn/windows/console/getstdhandle
     MemorySegment GetStdHandle(int nStdHandle);
