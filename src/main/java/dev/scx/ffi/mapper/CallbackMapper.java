@@ -30,8 +30,8 @@ public class CallbackMapper implements Mapper {
         var classInfo = (ClassInfo) ScxReflect.typeOf(callback.getClass());
         var callbackMethodName = callback.callbackMethodName();
         var methodInfo = Arrays.stream(classInfo.methods())
-                .filter(m -> m.name().equals(callbackMethodName))
-                .findFirst().orElseThrow(() -> new NoSuchMethodException(callbackMethodName));
+            .filter(m -> m.name().equals(callbackMethodName))
+            .findFirst().orElseThrow(() -> new NoSuchMethodException(callbackMethodName));
         methodInfo.setAccessible(true);// 有时我们会遇到 callback 是一个 lambda 表达式的情况 这时需要 强制设置访问权限
         var method = methodInfo.rawMethod();
         this.fun = lookup().unreflect(method).bindTo(callback);

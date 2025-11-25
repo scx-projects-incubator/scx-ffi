@@ -1,7 +1,6 @@
 package dev.scx.ffi;
 
 import dev.scx.ffi.mapper.*;
-import dev.scx.ffi.mapper.*;
 import dev.scx.ffi.type.Callback;
 import dev.scx.ffi.type.Struct;
 
