@@ -19,12 +19,12 @@ public final class ScxFFI {
         return createFFI(clazz, nativeLinker().defaultLookup());
     }
 
-    public static <T> T createFFI(Class<T> clazz, String name) {
-        return createFFI(clazz, libraryLookup(name, global()));
+    public static <T> T createFFI(Class<T> clazz, String libraryName) {
+        return createFFI(clazz, libraryLookup(libraryName, global()));
     }
 
-    public static <T> T createFFI(Class<T> clazz, Path path) {
-        return createFFI(clazz, libraryLookup(path, global()));
+    public static <T> T createFFI(Class<T> clazz, Path libraryPath) {
+        return createFFI(clazz, libraryLookup(libraryPath, global()));
     }
 
     public static <T> T createFFI(Class<T> clazz, SymbolLookup symbolLookup) {
