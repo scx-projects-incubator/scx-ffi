@@ -19,12 +19,12 @@ import static java.lang.foreign.Linker.nativeLinker;
 ///
 /// @author scx567888
 /// @version 0.0.1
-public final class FFMProxy implements InvocationHandler {
+final class FFMProxy implements InvocationHandler {
 
     private final SymbolLookup lookup;
     private final Map<Method, MethodHandle> cache;
 
-    FFMProxy(SymbolLookup lookup) {
+    public FFMProxy(SymbolLookup lookup) {
         this.lookup = lookup;
         this.cache = new HashMap<>();
     }

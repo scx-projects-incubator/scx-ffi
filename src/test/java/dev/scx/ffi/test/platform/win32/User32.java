@@ -1,11 +1,10 @@
 package dev.scx.ffi.test.platform.win32;
 
-import dev.scx.ffi.ScxFFM;
+import dev.scx.ffi.ScxFFI;
 import dev.scx.ffi.test.platform.win32.WinUser.POINT;
 import dev.scx.ffi.test.platform.win32.WinUser.WNDENUMPROC;
 
 import java.lang.foreign.MemorySegment;
-
 
 /// 提供一些 User32 标准的接口
 ///
@@ -13,7 +12,7 @@ import java.lang.foreign.MemorySegment;
 /// @version 0.0.1
 public interface User32 {
 
-    User32 USER32 = ScxFFM.ffmProxy("user32", User32.class);
+    User32 USER32 = ScxFFI.createFFI(User32.class, "user32");
 
     // https://learn.microsoft.com/zh-cn/windows/win32/api/winuser/nf-winuser-messageboxa
     int MessageBoxA(MemorySegment hWnd, String lpText, String lpCaption, int uType);
