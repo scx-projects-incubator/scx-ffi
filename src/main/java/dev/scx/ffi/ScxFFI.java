@@ -48,7 +48,7 @@ public final class ScxFFI {
     /// 方法会在第一次调用时才绑定
     public static <T> T createFFILazy(Class<T> clazz, SymbolLookup symbolLookup) {
         // 这里 newProxyInstance 会验证 clazz 是否是接口, 所以我们在 FFMProxy 中无需校验
-        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, new FFMProxyLazy(clazz, symbolLookup));
+        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, new FFMProxyLazy(symbolLookup));
     }
 
 }
