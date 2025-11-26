@@ -1,6 +1,7 @@
 package dev.scx.ffi.test.platform.c;
 
 import dev.scx.ffi.ScxFFI;
+import dev.scx.ffi.annotation.FFIName;
 
 /// 提供一些 C 标准的接口
 ///
@@ -12,10 +13,17 @@ public interface C {
 
     long strlen(String str);
 
-    int abs(int x);
+    // 测试别名
+    @FFIName("abs")
+    int javaAbs(int x);
 
     double sin(double x);
 
     double sqrt(double x);
+
+    // 测试默认方法
+    default int abs(int x) {
+        return javaAbs(x);
+    }
 
 }
