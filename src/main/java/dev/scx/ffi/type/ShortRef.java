@@ -1,23 +1,23 @@
-package dev.scx.ffi.mapper;
+package dev.scx.ffi.type;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.JAVA_SHORT;
 
-/// ShortMapper
+/// ShortRef
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class ShortMapper implements Mapper {
+public final class ShortRef implements FFIMapper {
 
     private short value;
 
-    public ShortMapper() {
+    public ShortRef() {
         this.value = 0;
     }
 
-    public ShortMapper(short value) {
+    public ShortRef(short value) {
         this.value = value;
     }
 
