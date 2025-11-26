@@ -1,23 +1,23 @@
-package dev.scx.ffi.mapper;
+package dev.scx.ffi.type;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
-/// LongMapper
+/// LongRef
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class LongMapper implements Mapper {
+public final class LongRef implements FFIMapper {
 
     private long value;
 
-    public LongMapper() {
+    public LongRef() {
         this.value = 0;
     }
 
-    public LongMapper(long value) {
+    public LongRef(long value) {
         this.value = value;
     }
 
@@ -25,7 +25,7 @@ public class LongMapper implements Mapper {
         return value;
     }
 
-    public void setValue(short value) {
+    public void setValue(long value) {
         this.value = value;
     }
 
