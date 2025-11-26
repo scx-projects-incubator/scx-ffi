@@ -23,6 +23,7 @@ public interface C {
 
     // 测试默认方法
     default int abs(int x) {
+        System.out.println("调用了 默认方法 abs !!!");
         return javaAbs(x);
     }
 
