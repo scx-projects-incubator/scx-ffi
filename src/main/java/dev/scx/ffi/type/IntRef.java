@@ -1,23 +1,23 @@
-package dev.scx.ffi.mapper;
+package dev.scx.ffi.type;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
-/// IntMapper
+/// IntRef
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class IntMapper implements Mapper {
+public final class IntRef implements FFIMapper {
 
     private int value;
 
-    public IntMapper() {
+    public IntRef() {
         this.value = 0;
     }
 
-    public IntMapper(int value) {
+    public IntRef(int value) {
         this.value = value;
     }
 
