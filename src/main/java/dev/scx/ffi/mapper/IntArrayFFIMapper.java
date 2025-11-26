@@ -1,19 +1,21 @@
 package dev.scx.ffi.mapper;
 
+import dev.scx.ffi.type.FFIMapper;
+
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
-/// IntArrayMapper
+/// IntArrayFFIMapper
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class IntArrayMapper implements Mapper {
+public class IntArrayFFIMapper implements FFIMapper {
 
     private int[] value;
 
-    public IntArrayMapper(int[] value) {
+    public IntArrayFFIMapper(int[] value) {
         this.value = value;
     }
 
