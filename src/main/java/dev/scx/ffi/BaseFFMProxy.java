@@ -1,7 +1,7 @@
 package dev.scx.ffi;
 
 import dev.scx.ffi.annotation.FFIName;
-import dev.scx.ffi.mapper.Mapper;
+import dev.scx.ffi.type.FFIMapper;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.FunctionDescriptor;
@@ -45,15 +45,15 @@ abstract class BaseFFMProxy implements InvocationHandler {
 
         try (var arena = Arena.ofConfined()) {
 
-            // 1, 将 args 全部转换为只包含 (基本类型 | MemorySegment | Mapper) 三种类型的数组
+            // 1, 将 args 全部转换为只包含 (基本类型 | MemorySegment | FFIMapper) 三种类型的数组
             var parameters = convertToParameters(args);
 
             // 2, 将 parameters 转换为只包含 (基本类型 | MemorySegment) 两种类型的 nativeParameters 数组
             var nativeParameters = new Object[args.length];
             for (var i = 0; i < parameters.length; i = i + 1) {
                 var parameter = parameters[i];
-                if (parameter instanceof Mapper mapper) {
-                    nativeParameters[i] = mapper.toMemorySegment(arena);
+                if (parameter instanceof FFIMapper ffiMapper) {
+                    nativeParameters[i] = ffiMapper.toMemorySegment(arena);
                 } else {
                     //这里只剩下 基本类型 | MemorySegment, 能够直接使用.
                     nativeParameters[i] = parameter;
@@ -63,12 +63,12 @@ abstract class BaseFFMProxy implements InvocationHandler {
             // 3, 执行方法
             var result = methodHandle.invokeWithArguments(nativeParameters);
 
-            // 4, Mapper 类型的参数 进行内存数据回写.
+            // 4, FFIMapper 类型的参数 进行内存数据回写.
             for (int i = 0; i < parameters.length; i = i + 1) {
                 var parameter = parameters[i];
                 var nativeParameter = nativeParameters[i];
-                if (parameter instanceof Mapper mapper && nativeParameter instanceof MemorySegment memorySegment) {
-                    mapper.fromMemorySegment(memorySegment);
+                if (parameter instanceof FFIMapper ffiMapper && nativeParameter instanceof MemorySegment memorySegment) {
+                    ffiMapper.fromMemorySegment(memorySegment);
                 }
             }
 
