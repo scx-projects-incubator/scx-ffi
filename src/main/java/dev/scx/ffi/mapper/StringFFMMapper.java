@@ -1,7 +1,5 @@
 package dev.scx.ffi.mapper;
 
-import dev.scx.ffi.type.StringRef;
-
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
