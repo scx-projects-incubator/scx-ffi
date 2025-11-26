@@ -5,7 +5,7 @@ import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
-/// IntArrayFFIMapper
+/// IntArrayFFMMapper
 ///
 /// 不建议直接使用, 推荐直接使用 `int[]`
 ///

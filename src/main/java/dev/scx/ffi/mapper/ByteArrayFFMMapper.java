@@ -1,33 +1,17 @@
-package dev.scx.ffi.type.primitive_array;
-
-import dev.scx.ffi.type.FFIMapper;
+package dev.scx.ffi.mapper;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.JAVA_BYTE;
 
-/// ByteArrayFFIMapper
+/// ByteArrayFFMMapper
 ///
 /// 不建议直接使用, 推荐直接使用 `byte[]`
 ///
 /// @author scx567888
 /// @version 0.0.1
-public final class ByteArrayFFIMapper implements FFIMapper {
-
-    private byte[] value;
-
-    public ByteArrayFFIMapper(byte[] value) {
-        this.value = value;
-    }
-
-    public byte[] getValue() {
-        return value;
-    }
-
-    public void setValue(byte[] value) {
-        this.value = value;
-    }
+public record ByteArrayFFMMapper(byte[] value) implements FFMMapper {
 
     @Override
     public MemorySegment toMemorySegment(Arena arena) {
@@ -37,7 +21,7 @@ public final class ByteArrayFFIMapper implements FFIMapper {
     @Override
     public void fromMemorySegment(MemorySegment memorySegment) {
         var temp = memorySegment.toArray(JAVA_BYTE);
-        // 原因参考 IntArrayFFIMapper
+        // 原因参考 IntArrayFFMMapper
         System.arraycopy(temp, 0, value, 0, temp.length);
     }
 
