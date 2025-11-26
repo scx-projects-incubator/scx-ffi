@@ -1,23 +1,23 @@
-package dev.scx.ffi.mapper;
+package dev.scx.ffi.type;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.JAVA_FLOAT;
 
-/// FloatMapper
+/// FloatRef
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class FloatMapper implements Mapper {
+public final class FloatRef implements FFIMapper {
 
     private float value;
 
-    public FloatMapper() {
+    public FloatRef() {
         this.value = 0;
     }
 
-    public FloatMapper(float value) {
+    public FloatRef(float value) {
         this.value = value;
     }
 
