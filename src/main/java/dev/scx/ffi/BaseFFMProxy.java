@@ -7,11 +7,8 @@ import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.SymbolLookup;
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static dev.scx.ffi.FFMHelper.*;
 import static java.lang.foreign.Linker.nativeLinker;
@@ -23,11 +20,9 @@ import static java.lang.foreign.Linker.nativeLinker;
 abstract class BaseFFMProxy implements InvocationHandler {
 
     private final SymbolLookup symbolLookup;
-    private final Map<Method, MethodHandle> defaultMethodHandleCache;
 
     protected BaseFFMProxy(SymbolLookup symbolLookup) {
         this.symbolLookup = symbolLookup;
-        this.defaultMethodHandleCache = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -40,7 +35,7 @@ abstract class BaseFFMProxy implements InvocationHandler {
 
         // 默认方法 直接调用
         if (method.isDefault()) {
-            return invokeDefaultMethod(proxy, method, args);
+            return InvocationHandler.invokeDefault(proxy, method, args);
         }
 
         // 处理 FFM 的方法调用
@@ -80,21 +75,6 @@ abstract class BaseFFMProxy implements InvocationHandler {
 
         }
 
-    }
-
-    private MethodHandle createDefaultMethodHandle(Object proxy, Method method) {
-        try {
-            var declaringClass = method.getDeclaringClass();
-            var lookup = MethodHandles.privateLookupIn(declaringClass, MethodHandles.lookup());
-            return lookup.unreflectSpecial(method, declaringClass).bindTo(proxy);
-        } catch (IllegalAccessException e) {
-            // 这种应该不会出现
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Object invokeDefaultMethod(Object proxy, Method method, Object... args) throws Throwable {
-        return defaultMethodHandleCache.computeIfAbsent(method, (m) -> createDefaultMethodHandle(proxy, m)).invokeWithArguments(args);
     }
 
     /// 创建 FFMMethodHandle (用于子类使用)
