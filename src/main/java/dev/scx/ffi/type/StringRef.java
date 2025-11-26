@@ -1,20 +1,17 @@
 package dev.scx.ffi.type;
 
-import java.lang.foreign.Arena;
-import java.lang.foreign.MemorySegment;
 import java.nio.charset.Charset;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-///  todo 现在是只读的 应该也允许回显吧
 /// StringRef
 ///
 /// @author scx567888
 /// @version 0.0.1
-public final class StringRef implements FFIMapper {
+public final class StringRef {
 
-    private final String value;
-    private final Charset charset;
+    private String value;
+    private Charset charset;
 
     public StringRef(String value) {
         this.value = value;
@@ -26,14 +23,20 @@ public final class StringRef implements FFIMapper {
         this.charset = charset;
     }
 
-    @Override
-    public MemorySegment toMemorySegment(Arena arena) {
-        return arena.allocateFrom(value, charset);
+    public String getValue() {
+        return value;
     }
 
-    @Override
-    public void fromMemorySegment(MemorySegment memorySegment) {
+    public void setValue(String value) {
+        this.value = value;
+    }
 
+    public Charset getCharset() {
+        return charset;
+    }
+
+    public void setCharset(Charset charset) {
+        this.charset = charset;
     }
 
 }
