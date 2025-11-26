@@ -1,6 +1,4 @@
-package dev.scx.ffi.type.primitive_array;
-
-import dev.scx.ffi.type.FFIMapper;
+package dev.scx.ffi.mapper;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
@@ -13,21 +11,7 @@ import static java.lang.foreign.ValueLayout.JAVA_INT;
 ///
 /// @author scx567888
 /// @version 0.0.1
-public final class IntArrayFFIMapper implements FFIMapper {
-
-    private int[] value;
-
-    public IntArrayFFIMapper(int[] value) {
-        this.value = value;
-    }
-
-    public int[] getValue() {
-        return value;
-    }
-
-    public void setValue(int[] value) {
-        this.value = value;
-    }
+public record IntArrayFFMMapper(int[] value) implements FFMMapper {
 
     @Override
     public MemorySegment toMemorySegment(Arena arena) {

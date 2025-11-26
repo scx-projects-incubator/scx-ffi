@@ -9,6 +9,8 @@ import static java.lang.foreign.ValueLayout.JAVA_INT;
 
 /// IntRefFFMMapper
 ///
+/// 不建议直接使用, 推荐直接使用 [IntRef]
+///
 /// @author scx567888
 /// @version 0.0.1
 public record IntRefFFMMapper(IntRef intRef) implements FFMMapper {
