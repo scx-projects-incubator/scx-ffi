@@ -12,7 +12,7 @@ import java.util.HashMap;
 ///
 /// @author scx567888
 /// @version 0.0.1
-final class FFMProxy extends AbstractFFMProxy {
+final class FFMProxy extends BaseFFMProxy {
 
     /// 这里只会读取 所以 HashMap 即可保证线程安全.
     private final HashMap<Method, MethodHandle> ffmMethodHandleCache;
