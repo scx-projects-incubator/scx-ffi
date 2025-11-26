@@ -1,40 +1,40 @@
-package dev.scx.ffi.mapper.primitive_array;
+package dev.scx.ffi.type.primitive_array;
 
 import dev.scx.ffi.type.FFIMapper;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
-import static java.lang.foreign.ValueLayout.JAVA_CHAR;
+import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
-/// CharArrayFFIMapper
+/// DoubleArrayFFIMapper
 ///
 /// @author scx567888
 /// @version 0.0.1
-public final class CharArrayFFIMapper implements FFIMapper {
+public final class DoubleArrayFFIMapper implements FFIMapper {
 
-    private char[] value;
+    private double[] value;
 
-    public CharArrayFFIMapper(char[] value) {
+    public DoubleArrayFFIMapper(double[] value) {
         this.value = value;
     }
 
-    public char[] getValue() {
+    public double[] getValue() {
         return value;
     }
 
-    public void setValue(char[] value) {
+    public void setValue(double[] value) {
         this.value = value;
     }
 
     @Override
     public MemorySegment toMemorySegment(Arena arena) {
-        return arena.allocateFrom(JAVA_CHAR, value);
+        return arena.allocateFrom(JAVA_DOUBLE, value);
     }
 
     @Override
     public void fromMemorySegment(MemorySegment memorySegment) {
-        var temp = memorySegment.toArray(JAVA_CHAR);
+        var temp = memorySegment.toArray(JAVA_DOUBLE);
         // 原因参考 IntArrayFFIMapper
         System.arraycopy(temp, 0, value, 0, temp.length);
     }

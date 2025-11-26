@@ -1,4 +1,4 @@
-package dev.scx.ffi.mapper.primitive_array;
+package dev.scx.ffi.type.primitive_array;
 
 import dev.scx.ffi.type.FFIMapper;
 
