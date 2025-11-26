@@ -1,19 +1,21 @@
-package dev.scx.ffi.mapper;
+package dev.scx.ffi.mapper.primitive_array;
+
+import dev.scx.ffi.type.FFIMapper;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.JAVA_CHAR;
 
-/// CharArrayMapper
+/// CharArrayFFIMapper
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class CharArrayMapper implements Mapper {
+public final class CharArrayFFIMapper implements FFIMapper {
 
     private char[] value;
 
-    public CharArrayMapper(char[] value) {
+    public CharArrayFFIMapper(char[] value) {
         this.value = value;
     }
 
@@ -33,7 +35,7 @@ public class CharArrayMapper implements Mapper {
     @Override
     public void fromMemorySegment(MemorySegment memorySegment) {
         var temp = memorySegment.toArray(JAVA_CHAR);
-        // 原因参考 IntArrayMapper
+        // 原因参考 IntArrayFFIMapper
         System.arraycopy(temp, 0, value, 0, temp.length);
     }
 

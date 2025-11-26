@@ -1,4 +1,4 @@
-package dev.scx.ffi.mapper;
+package dev.scx.ffi.mapper.primitive_array;
 
 import dev.scx.ffi.type.FFIMapper;
 
@@ -11,7 +11,7 @@ import static java.lang.foreign.ValueLayout.JAVA_LONG;
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class LongArrayFFIMapper implements FFIMapper {
+public final class LongArrayFFIMapper implements FFIMapper {
 
     private long[] value;
 
@@ -35,7 +35,7 @@ public class LongArrayFFIMapper implements FFIMapper {
     @Override
     public void fromMemorySegment(MemorySegment memorySegment) {
         var temp = memorySegment.toArray(JAVA_LONG);
-        // 原因参考 IntArrayMapper
+        // 原因参考 IntArrayFFIMapper
         System.arraycopy(temp, 0, value, 0, temp.length);
     }
 

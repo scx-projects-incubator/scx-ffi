@@ -1,4 +1,4 @@
-package dev.scx.ffi.mapper;
+package dev.scx.ffi.mapper.primitive_array;
 
 import dev.scx.ffi.type.FFIMapper;
 
@@ -11,7 +11,7 @@ import static java.lang.foreign.ValueLayout.JAVA_BYTE;
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class ByteArrayFFIMapper implements FFIMapper {
+public final class ByteArrayFFIMapper implements FFIMapper {
 
     private byte[] value;
 
