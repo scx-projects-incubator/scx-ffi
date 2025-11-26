@@ -17,10 +17,12 @@ public class CTest {
         int a1 = "abc123456".length();
         Assert.assertEquals(a, a1);
 
+        // 测试默认方法调用
         long b = C.abs(-123);
         long b1 = Math.abs(-123);
         Assert.assertEquals(b, b1);
 
+        // 测试继承调用
         var c = C.sin(12);
         var c1 = Math.sin(12);
         Assert.assertEquals(c, c1);

@@ -7,7 +7,7 @@ import dev.scx.ffi.annotation.FFIName;
 ///
 /// @author scx567888
 /// @version 0.0.1
-public interface C {
+public interface C extends C1{
 
     C C = ScxFFI.createFFI(C.class);
 
@@ -16,8 +16,6 @@ public interface C {
     // 测试别名
     @FFIName("abs")
     int javaAbs(int x);
-
-    double sin(double x);
 
     double sqrt(double x);
 
