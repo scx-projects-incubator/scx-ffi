@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 import static dev.scx.ffi.FFMHelper.*;
 import static java.lang.foreign.Linker.nativeLinker;
 
-/// AbstractFFMProxy
+/// BaseFFMProxy
 ///
 /// @author scx567888
 /// @version 0.0.1
