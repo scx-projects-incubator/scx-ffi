@@ -7,11 +7,11 @@ import java.lang.annotation.Target;
 
 /// FFIName
 ///
-/// 如果外部函数的方法名 不属于 java 中的合法方法名 可以使用这个注解覆盖.
+/// 如果外部函数的方法名, 或者结构体的字段名, 不属于 java 中的合法方法名 可以使用这个注解覆盖.
 ///
 /// @author scx567888
 /// @version 0.0.1
-@Target({ElementType.METHOD})
+@Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FFIName {
 
