@@ -1,6 +1,6 @@
 package dev.scx.ffi.mapper;
 
-import dev.scx.ffi.type.Callback;
+import dev.scx.ffi.type.FFICallback;
 import dev.scx.reflect.ClassInfo;
 import dev.scx.reflect.ScxReflect;
 
@@ -15,17 +15,21 @@ import static dev.scx.ffi.FFMHelper.getMemoryLayouts;
 import static java.lang.foreign.Linker.nativeLinker;
 import static java.lang.invoke.MethodHandles.lookup;
 
-/// CallbackMapper
+// todo 有bug
+
+/// FFICallbackFFMMapper
+///
+/// 不建议直接使用, 推荐直接使用 [FFICallback]
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class CallbackMapper implements Mapper {
+public final class FFICallbackFFMMapper implements FFMMapper {
 
-    private final Callback callback;
+    private final FFICallback callback;
     private final MethodHandle fun;
     private final FunctionDescriptor functionDescriptor;
 
-    public CallbackMapper(Callback callback) throws NoSuchMethodException, IllegalAccessException {
+    public FFICallbackFFMMapper(FFICallback callback) throws NoSuchMethodException, IllegalAccessException {
         this.callback = callback;
         var classInfo = (ClassInfo) ScxReflect.typeOf(callback.getClass());
         var callbackMethodName = callback.callbackMethodName();

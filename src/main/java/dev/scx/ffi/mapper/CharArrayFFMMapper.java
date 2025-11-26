@@ -5,25 +5,13 @@ import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.JAVA_CHAR;
 
-/// CharArrayMapper
+/// CharArrayFFMMapper
+///
+/// 不建议直接使用, 推荐直接使用 `char[]`
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class CharArrayMapper implements Mapper {
-
-    private char[] value;
-
-    public CharArrayMapper(char[] value) {
-        this.value = value;
-    }
-
-    public char[] getValue() {
-        return value;
-    }
-
-    public void setValue(char[] value) {
-        this.value = value;
-    }
+public record CharArrayFFMMapper(char[] value) implements FFMMapper {
 
     @Override
     public MemorySegment toMemorySegment(Arena arena) {
@@ -33,7 +21,7 @@ public class CharArrayMapper implements Mapper {
     @Override
     public void fromMemorySegment(MemorySegment memorySegment) {
         var temp = memorySegment.toArray(JAVA_CHAR);
-        // 原因参考 IntArrayMapper
+        // 原因参考 IntArrayFFMMapper
         System.arraycopy(temp, 0, value, 0, temp.length);
     }
 

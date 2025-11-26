@@ -1,13 +1,14 @@
 package dev.scx.ffi;
 
 import dev.scx.ffi.mapper.*;
-import dev.scx.ffi.type.Callback;
-import dev.scx.ffi.type.Struct;
+import dev.scx.ffi.type.*;
 
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.*;
+
+// todo 代码有点问题
 
 /// FFMHelper
 ///
@@ -16,7 +17,7 @@ import static java.lang.foreign.ValueLayout.*;
 public final class FFMHelper {
 
     public static MemoryLayout getMemoryLayout(Class<?> type) {
-        //1, 先处理可以直接映射的基本类型
+        // 1, 先处理可以直接映射的基本类型
         if (type == Byte.class || type == byte.class) {
             return JAVA_BYTE;
         }
@@ -44,24 +45,28 @@ public final class FFMHelper {
         if (type == MemorySegment.class) {
             return ADDRESS;
         }
-        //3, 处理字符串
+        // 3, 处理字符串 todo 这里存疑?
         if (String.class == type) {
             return ADDRESS;
         }
-        //4, 处理映射类型
-        if (Mapper.class.isAssignableFrom(type)) {
+        // 4, 处理映射类型
+        if (FFMMapper.class.isAssignableFrom(type)) {
             return ADDRESS;
         }
-        //5, 处理 结构体类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.structLayout(), 因为需要在运行时才知道具体结构
-        if (Struct.class.isAssignableFrom(type)) {
+        // 5, 处理 结构体类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.structLayout(), 因为需要在运行时才知道具体结构
+        if (FFIStruct.class.isAssignableFrom(type)) {
             return ADDRESS;
         }
-        //6, 处理 Callback 类型
-        if (Callback.class.isAssignableFrom(type)) {
+        // 6, 处理 Callback 类型
+        if (FFICallback.class.isAssignableFrom(type)) {
             return ADDRESS;
         }
-        //7, 处理基本类型的数组类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.sequenceLayout() , 因为我们不知道数组长度
+        // 7, 处理基本类型的数组类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.sequenceLayout() , 因为我们不知道数组长度
         if (type.isArray() && type.getComponentType().isPrimitive()) {
+            return ADDRESS;
+        }
+        // 8, 内置 Ref
+        if (type == ByteRef.class || type == CharRef.class || type == ShortRef.class || type == IntRef.class || type == LongRef.class || type == FloatRef.class || type == DoubleRef.class || type == StringRef.class) {
             return ADDRESS;
         }
         throw new IllegalArgumentException("不支持的参数类型 !!! " + type);
@@ -89,22 +94,31 @@ public final class FFMHelper {
                  Boolean _,
                  Character _,
                  MemorySegment _ -> o;
+            //2, 内置 Ref
+            case ByteRef r -> new ByteRefFFMMapper(r);
+            case CharRef r -> new CharRefFFMMapper(r);
+            case ShortRef r -> new ShortRefFFMMapper(r);
+            case IntRef r -> new IntRefFFMMapper(r);
+            case LongRef r -> new LongRefFFMMapper(r);
+            case FloatRef r -> new FloatRefFFMMapper(r);
+            case DoubleRef r -> new DoubleRefFFMMapper(r);
+            case StringRef r -> new StringRefFFMMapper(r);
             //3, 字符串
-            case String s -> new StringMapper(s);
+            case String s -> new StringFFMMapper(s);
             //4, 映射类型
-            case Mapper m -> m;
+            case FFMMapper m -> m;
             //5, 结构体
-            case Struct c -> new StructMapper(c);
+            case FFIStruct c -> new FFIStructFFMMapper(c);
             //6, Callback 类型
-            case Callback c -> new CallbackMapper(c);
+            case FFICallback c -> new FFICallbackFFMMapper(c);
             //7, 数组类型
-            case byte[] c -> new ByteArrayMapper(c);
-            case char[] c -> new CharArrayMapper(c);
-            case short[] c -> new ShortArrayMapper(c);
-            case int[] c -> new IntArrayMapper(c);
-            case long[] c -> new LongArrayMapper(c);
-            case float[] c -> new FloatArrayMapper(c);
-            case double[] c -> new DoubleArrayMapper(c);
+            case byte[] c -> new ByteArrayFFMMapper(c);
+            case char[] c -> new CharArrayFFMMapper(c);
+            case short[] c -> new ShortArrayFFMMapper(c);
+            case int[] c -> new IntArrayFFMMapper(c);
+            case long[] c -> new LongArrayFFMMapper(c);
+            case float[] c -> new FloatArrayFFMMapper(c);
+            case double[] c -> new DoubleArrayFFMMapper(c);
             default -> throw new RuntimeException("无法转换的类型 !!! " + o.getClass());
         };
     }

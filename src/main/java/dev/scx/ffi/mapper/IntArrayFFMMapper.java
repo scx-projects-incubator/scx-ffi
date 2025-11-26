@@ -5,25 +5,13 @@ import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 
-/// IntArrayMapper
+/// IntArrayFFMMapper
+///
+/// 不建议直接使用, 推荐直接使用 `int[]`
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class IntArrayMapper implements Mapper {
-
-    private int[] value;
-
-    public IntArrayMapper(int[] value) {
-        this.value = value;
-    }
-
-    public int[] getValue() {
-        return value;
-    }
-
-    public void setValue(int[] value) {
-        this.value = value;
-    }
+public record IntArrayFFMMapper(int[] value) implements FFMMapper {
 
     @Override
     public MemorySegment toMemorySegment(Arena arena) {
