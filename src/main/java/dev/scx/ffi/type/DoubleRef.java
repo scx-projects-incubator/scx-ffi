@@ -1,23 +1,23 @@
-package dev.scx.ffi.mapper;
+package dev.scx.ffi.type;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
 
-/// DoubleMapper
+/// DoubleRef
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class DoubleMapper implements Mapper {
+public final class DoubleRef implements FFIMapper {
 
     private double value;
 
-    public DoubleMapper() {
+    public DoubleRef() {
         this.value = 0;
     }
 
-    public DoubleMapper(double value) {
+    public DoubleRef(double value) {
         this.value = value;
     }
 
