@@ -26,6 +26,7 @@ abstract class BaseFFMProxy implements InvocationHandler {
         this.symbolLookup = symbolLookup;
     }
 
+    // todo args 可能是 null ?
     @Override
     public final Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
