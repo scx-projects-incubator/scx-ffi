@@ -1,7 +1,7 @@
 package dev.scx.ffi.test.platform.win32;
 
 import dev.scx.ffi.ScxFFI;
-import dev.scx.ffi.mapper.IntMapper;
+import dev.scx.ffi.type.IntRef;
 
 import java.lang.foreign.MemorySegment;
 
@@ -17,7 +17,7 @@ public interface Kernel32 {
     MemorySegment GetStdHandle(int nStdHandle);
 
     // https://learn.microsoft.com/zh-cn/windows/console/getconsolemode
-    boolean GetConsoleMode(MemorySegment hConsoleHandle, IntMapper lpMode);
+    boolean GetConsoleMode(MemorySegment hConsoleHandle, IntRef lpMode);
 
     // https://learn.microsoft.com/zh-cn/windows/console/setconsolemode
     boolean SetConsoleMode(MemorySegment hConsoleHandle, long dwMode);

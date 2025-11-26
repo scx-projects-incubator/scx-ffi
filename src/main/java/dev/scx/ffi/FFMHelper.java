@@ -1,9 +1,7 @@
 package dev.scx.ffi;
 
 import dev.scx.ffi.mapper.*;
-import dev.scx.ffi.mapper.FFICallbackFFMMapper;
 import dev.scx.ffi.type.*;
-import dev.scx.ffi.mapper.FFIStructFFMMapper;
 
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
@@ -65,6 +63,10 @@ public final class FFMHelper {
         }
         // 7, 处理基本类型的数组类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.sequenceLayout() , 因为我们不知道数组长度
         if (type.isArray() && type.getComponentType().isPrimitive()) {
+            return ADDRESS;
+        }
+        // 8, 内置 Ref
+        if (type == ByteRef.class || type == CharRef.class || type == ShortRef.class || type == IntRef.class || type == LongRef.class || type == FloatRef.class || type == DoubleRef.class || type == StringRef.class) {
             return ADDRESS;
         }
         throw new IllegalArgumentException("不支持的参数类型 !!! " + type);
