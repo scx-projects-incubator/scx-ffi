@@ -24,18 +24,18 @@ final class FFMProxy extends BaseFFMProxy {
 
     private HashMap<Method, MethodHandle> initFFMMethodHandleCache(Class<?> clazz) {
         var typeInfo = ScxReflect.typeOf(clazz);
+
         if (typeInfo instanceof ClassInfo classInfo) {
-            var map = new HashMap<Method, MethodHandle>();
+            var cache = new HashMap<Method, MethodHandle>();
             // 获取接口整个层级的所有方法
             var methodInfos = classInfo.allMethods();
             for (var methodInfo : methodInfos) {
-                // 这里只 bind abstract 方法.
-                if (!methodInfo.isAbstract()) {
-                    continue;
+                // 这里只 处理 abstract 方法.
+                if (methodInfo.isAbstract()) {
+                    cache.put(methodInfo.rawMethod(), createFFMMethodHandle(methodInfo.rawMethod()));
                 }
-                map.put(methodInfo.rawMethod(), createFFMMethodHandle(methodInfo.rawMethod()));
             }
-            return map;
+            return cache;
         }
 
         // 这种情况几乎不可能发生, 此处仅作防御处理.
