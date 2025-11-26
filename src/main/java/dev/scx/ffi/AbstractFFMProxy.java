@@ -3,25 +3,45 @@ package dev.scx.ffi;
 import dev.scx.ffi.mapper.Mapper;
 
 import java.lang.foreign.Arena;
+import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.SymbolLookup;
 import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import static dev.scx.ffi.FFMHelper.convertToParameters;
+import static dev.scx.ffi.FFMHelper.*;
+import static java.lang.foreign.Linker.nativeLinker;
 
 // todo
 abstract class AbstractFFMProxy implements InvocationHandler {
 
+    private final SymbolLookup symbolLookup;
+    private final Map<Method, MethodHandle> defaultMethodMap;
+
+    protected AbstractFFMProxy(SymbolLookup symbolLookup) {
+        this.symbolLookup = symbolLookup;
+        this.defaultMethodMap = new ConcurrentHashMap<>();
+    }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-        // Object 的方法这里直接跳过, 我们只处理接口上的方法
+        // Object 方法 直接调用
         if (method.getDeclaringClass() == Object.class) {
             return method.invoke(this, args);
         }
 
-        var methodHandle = this.findMethodHandle(method);
+        // 默认方法 直接调用
+        if (method.isDefault()) {
+            return invokeDefaultMethod(proxy, method, args);
+        }
+
+        // 处理 FFM 的方法调用
+        var methodHandle = this.findFFMMethodHandle(method);
 
         try (var arena = Arena.ofConfined()) {
 
@@ -59,6 +79,37 @@ abstract class AbstractFFMProxy implements InvocationHandler {
 
     }
 
-    protected abstract MethodHandle findMethodHandle(Method method);
+    private MethodHandle createDefaultMethodHandle(Object proxy, Method method) {
+        try {
+            var declaringClass = method.getDeclaringClass();
+            var lookup = MethodHandles.privateLookupIn(declaringClass, MethodHandles.lookup());
+            return lookup.unreflectSpecial(method, declaringClass).bindTo(proxy);
+        } catch (IllegalAccessException e) {
+            // 这种应该不会出现
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Object invokeDefaultMethod(Object proxy, Method method, Object... args) throws Throwable {
+        return defaultMethodMap.computeIfAbsent(method, (m) -> createDefaultMethodHandle(proxy, m)).invokeWithArguments(args);
+    }
+
+    /// 创建 FFMMethodHandle (用于子类使用)
+    protected final MethodHandle createFFMMethodHandle(Method method) {
+        //1, 根据方法名查找对应的方法
+        var fun = symbolLookup.find(method.getName()).orElse(null);
+        if (fun == null) {
+            throw new IllegalArgumentException("未找到对应外部方法 : " + method.getName());
+        }
+        //2, 创建方法的描述, 包括 返回值类型 参数类型列表
+        var returnLayout = getMemoryLayout(method.getReturnType());
+        var paramLayouts = getMemoryLayouts(method.getParameterTypes());
+        var functionDescriptor = FunctionDescriptor.of(returnLayout, paramLayouts);
+        //3, 根据方法和描述, 获取可以调用本机方法的方法句柄
+        return nativeLinker().downcallHandle(fun, functionDescriptor);
+    }
+
+    /// 获取 FFMMethodHandle
+    protected abstract MethodHandle findFFMMethodHandle(Method method);
 
 }
