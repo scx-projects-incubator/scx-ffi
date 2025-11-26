@@ -9,6 +9,8 @@ import static java.lang.foreign.ValueLayout.JAVA_BYTE;
 
 /// ByteArrayFFIMapper
 ///
+/// 不建议直接使用, 推荐直接使用 `byte[]`
+///
 /// @author scx567888
 /// @version 0.0.1
 public final class ByteArrayFFIMapper implements FFIMapper {

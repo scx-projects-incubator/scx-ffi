@@ -9,6 +9,8 @@ import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
 /// LongArrayFFIMapper
 ///
+/// 不建议直接使用, 推荐直接使用 `long[]`
+///
 /// @author scx567888
 /// @version 0.0.1
 public final class LongArrayFFIMapper implements FFIMapper {
