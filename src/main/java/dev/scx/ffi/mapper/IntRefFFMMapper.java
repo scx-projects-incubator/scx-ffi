@@ -1,0 +1,26 @@
+package dev.scx.ffi.mapper;
+
+import dev.scx.ffi.type.IntRef;
+
+import java.lang.foreign.Arena;
+import java.lang.foreign.MemorySegment;
+
+import static java.lang.foreign.ValueLayout.JAVA_INT;
+
+/// IntRefFFMMapper
+///
+/// @author scx567888
+/// @version 0.0.1
+public record IntRefFFMMapper(IntRef intRef) implements FFMMapper {
+
+    @Override
+    public MemorySegment toMemorySegment(Arena arena) {
+        return arena.allocateFrom(JAVA_INT, intRef.getValue());
+    }
+
+    @Override
+    public void fromMemorySegment(MemorySegment memorySegment) {
+        intRef.setValue(memorySegment.get(JAVA_INT, 0));
+    }
+
+}
