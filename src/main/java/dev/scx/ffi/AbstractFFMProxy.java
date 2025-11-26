@@ -16,19 +16,22 @@ import java.util.concurrent.ConcurrentHashMap;
 import static dev.scx.ffi.FFMHelper.*;
 import static java.lang.foreign.Linker.nativeLinker;
 
-// todo
+/// AbstractFFMProxy
+///
+/// @author scx567888
+/// @version 0.0.1
 abstract class AbstractFFMProxy implements InvocationHandler {
 
     private final SymbolLookup symbolLookup;
-    private final Map<Method, MethodHandle> defaultMethodMap;
+    private final Map<Method, MethodHandle> defaultMethodHandleCache;
 
     protected AbstractFFMProxy(SymbolLookup symbolLookup) {
         this.symbolLookup = symbolLookup;
-        this.defaultMethodMap = new ConcurrentHashMap<>();
+        this.defaultMethodHandleCache = new ConcurrentHashMap<>();
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public final Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
         // Object 方法 直接调用
         if (method.getDeclaringClass() == Object.class) {
@@ -91,7 +94,7 @@ abstract class AbstractFFMProxy implements InvocationHandler {
     }
 
     private Object invokeDefaultMethod(Object proxy, Method method, Object... args) throws Throwable {
-        return defaultMethodMap.computeIfAbsent(method, (m) -> createDefaultMethodHandle(proxy, m)).invokeWithArguments(args);
+        return defaultMethodHandleCache.computeIfAbsent(method, (m) -> createDefaultMethodHandle(proxy, m)).invokeWithArguments(args);
     }
 
     /// 创建 FFMMethodHandle (用于子类使用)
