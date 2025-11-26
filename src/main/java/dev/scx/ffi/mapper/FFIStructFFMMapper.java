@@ -1,6 +1,5 @@
-package dev.scx.ffi.type.struct;
+package dev.scx.ffi.mapper;
 
-import dev.scx.ffi.type.FFIMapper;
 import dev.scx.ffi.type.FFIStruct;
 import dev.scx.reflect.AccessModifier;
 import dev.scx.reflect.ClassInfo;
@@ -20,19 +19,19 @@ import java.util.Map;
 import static dev.scx.ffi.FFMHelper.getMemoryLayout;
 
 /// todo 目前 只支持单层的 结构 需要支持多层
-/// StructFFIMapper
+/// FFIStructFFMMapper
 ///
 /// 不建议直接使用, 推荐直接使用 [FFIStruct]
 ///
 /// @author scx567888
 /// @version 0.0.1
-public final class StructFFIMapper implements FFIMapper {
+public final class FFIStructFFMMapper implements FFMMapper {
 
     private final Object value;
     private final Map<FieldInfo, VarHandle> fieldMap;
     private final StructLayout LAYOUT;
 
-    public StructFFIMapper(FFIStruct value) {
+    public FFIStructFFMMapper(FFIStruct value) {
         this.value = value;
         var classInfo = (ClassInfo) ScxReflect.typeOf(this.value.getClass());
         this.fieldMap = new HashMap<>();

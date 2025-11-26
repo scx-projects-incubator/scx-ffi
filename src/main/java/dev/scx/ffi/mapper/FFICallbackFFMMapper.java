@@ -1,8 +1,6 @@
-package dev.scx.ffi.type.callback;
+package dev.scx.ffi.mapper;
 
 import dev.scx.ffi.type.FFICallback;
-import dev.scx.ffi.type.FFIMapper;
-import dev.scx.ffi.type.FFIStruct;
 import dev.scx.reflect.ClassInfo;
 import dev.scx.reflect.ScxReflect;
 
@@ -18,19 +16,19 @@ import static java.lang.foreign.Linker.nativeLinker;
 import static java.lang.invoke.MethodHandles.lookup;
 
 // todo 有bug
-/// CallbackFFIMapper
+/// FFICallbackFFMMapper
 ///
 /// 不建议直接使用, 推荐直接使用 [FFICallback]
 ///
 /// @author scx567888
 /// @version 0.0.1
-public final class CallbackFFIMapper implements FFIMapper {
+public final class FFICallbackFFMMapper implements FFMMapper {
 
     private final FFICallback callback;
     private final MethodHandle fun;
     private final FunctionDescriptor functionDescriptor;
 
-    public CallbackFFIMapper(FFICallback callback) throws NoSuchMethodException, IllegalAccessException {
+    public FFICallbackFFMMapper(FFICallback callback) throws NoSuchMethodException, IllegalAccessException {
         this.callback = callback;
         var classInfo = (ClassInfo) ScxReflect.typeOf(callback.getClass());
         var callbackMethodName = callback.callbackMethodName();
