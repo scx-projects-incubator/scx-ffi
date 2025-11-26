@@ -92,7 +92,7 @@ public final class FFMHelper {
                  Boolean _,
                  Character _,
                  MemorySegment _ -> o;
-            //2, 基本类型 Ref
+            //2, 内置 Ref
             case ByteRef r -> new ByteRefFFMMapper(r);
             case CharRef r -> new CharRefFFMMapper(r);
             case ShortRef r -> new ShortRefFFMMapper(r);
@@ -100,8 +100,9 @@ public final class FFMHelper {
             case LongRef r -> new LongRefFFMMapper(r);
             case FloatRef r -> new FloatRefFFMMapper(r);
             case DoubleRef r -> new DoubleRefFFMMapper(r);
+            case StringRef r -> new StringRefFFMMapper(r);
             //3, 字符串
-            case String s -> new StringRef(s);
+            case String s -> new StringFFMMapper(s);
             //4, 映射类型
             case FFMMapper m -> m;
             //5, 结构体
