@@ -20,12 +20,12 @@ import static java.lang.foreign.Linker.nativeLinker;
 ///
 /// @author scx567888
 /// @version 0.0.1
-abstract class AbstractFFMProxy implements InvocationHandler {
+abstract class BaseFFMProxy implements InvocationHandler {
 
     private final SymbolLookup symbolLookup;
     private final Map<Method, MethodHandle> defaultMethodHandleCache;
 
-    protected AbstractFFMProxy(SymbolLookup symbolLookup) {
+    protected BaseFFMProxy(SymbolLookup symbolLookup) {
         this.symbolLookup = symbolLookup;
         this.defaultMethodHandleCache = new ConcurrentHashMap<>();
     }
