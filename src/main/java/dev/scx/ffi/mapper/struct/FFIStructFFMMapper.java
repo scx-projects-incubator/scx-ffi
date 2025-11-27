@@ -26,7 +26,7 @@ public final class FFIStructFFMMapper implements FFMMapper {
         this.ffiStruct = ffiStruct;
         // 1, 创建 树形结构 (这里必然是 StructNode)
         this.node = (StructNode) createNode(ffiStruct.getClass());
-        //2, 创建 内存布局
+        // 2, 创建 内存布局
         this.memoryLayout = this.node.createMemoryLayout();
     }
 
