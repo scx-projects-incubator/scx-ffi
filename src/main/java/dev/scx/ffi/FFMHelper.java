@@ -8,15 +8,12 @@ import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.*;
 
-// todo 代码有点问题
-
 /// FFMHelper
 ///
 /// @author scx567888
 /// @version 0.0.1
 public final class FFMHelper {
 
-    // todo void 没处理
     public static MemoryLayout getMemoryLayout(Class<?> type) {
         // 1, 先处理可以直接映射的基本类型
         if (type == byte.class || type == Byte.class) {
