@@ -1,18 +1,22 @@
 package dev.scx.ffi.mapper.struct;
 
+import dev.scx.reflect.ClassInfo;
+import dev.scx.reflect.FieldInfo;
+
 import java.lang.foreign.MemoryLayout;
+import java.lang.foreign.MemorySegment;
 import java.util.ArrayList;
 import java.util.List;
 
 final class StructNode implements Node {
 
-    private final String name;
-    private final Class<?> type;
+    private final FieldInfo fieldInfo;
+    private final ClassInfo classInfo;
     private final List<Node> fieldNodes;
 
-    public StructNode(String name, Class<?> type) {
-        this.name = name;
-        this.type = type;
+    public StructNode(FieldInfo fieldInfo, ClassInfo classInfo) {
+        this.fieldInfo = fieldInfo;
+        this.classInfo = classInfo;
         this.fieldNodes = new ArrayList<>();
     }
 
@@ -27,10 +31,31 @@ final class StructNode implements Node {
             arr[i] = fieldNodes.get(i).createMemoryLayout();
         }
         var memoryLayout = MemoryLayout.structLayout(arr);
-        if (name != null) {
-            memoryLayout = memoryLayout.withName(name);
+        if (fieldInfo != null) {
+            memoryLayout = memoryLayout.withName(fieldInfo.name());
         }
         return memoryLayout;
+    }
+
+    @Override
+    public FieldInfo fieldInfo() {
+        return fieldInfo;
+    }
+
+    @Override
+    public long writeToMemorySegment(MemorySegment memorySegment, long offset, Object value) {
+        long totalBytesWritten = 0;
+        for (var fieldNode : fieldNodes) {
+            try {
+                // 这里不需要对 fieldInfo 判空, 因为 必定有值.
+                var fieldValue = fieldNode.fieldInfo().get(value);
+                totalBytesWritten += fieldNode.writeToMemorySegment(memorySegment, offset + totalBytesWritten, fieldValue);
+            } catch (Exception e) {
+                // todo 这里可能需要 精细化 处理异常?
+                throw new RuntimeException(e);
+            }
+        }
+        return totalBytesWritten;
     }
 
 }
