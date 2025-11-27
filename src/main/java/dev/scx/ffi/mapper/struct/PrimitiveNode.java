@@ -49,6 +49,11 @@ final class PrimitiveNode implements Node {
     }
 
     @Override
+    public FieldInfo fieldInfo() {
+        return fieldInfo;
+    }
+
+    @Override
     public long writeToMemorySegment(MemorySegment memorySegment, long offset, Object value) {
         var type = typeInfo.rawClass();
         if (type == byte.class) {
