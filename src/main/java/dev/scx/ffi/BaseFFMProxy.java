@@ -1,6 +1,6 @@
 package dev.scx.ffi;
 
-import dev.scx.ffi.annotation.FFIName;
+import dev.scx.ffi.annotation.SymbolName;
 import dev.scx.ffi.mapper.FFMMapper;
 
 import java.lang.foreign.Arena;
@@ -82,8 +82,8 @@ abstract class BaseFFMProxy implements InvocationHandler {
     /// 创建 FFMMethodHandle (用于子类使用)
     protected final MethodHandle createFFMMethodHandle(Method method) {
         // 0, 获取方法名
-        var ffiName = method.getAnnotation(FFIName.class);
-        var name = ffiName == null ? method.getName() : ffiName.value();
+        var symbolName = method.getAnnotation(SymbolName.class);
+        var name = symbolName == null ? method.getName() : symbolName.value();
 
         // 1, 根据方法名查找对应的方法
         var fun = symbolLookup.find(name).orElse(null);
@@ -92,9 +92,16 @@ abstract class BaseFFMProxy implements InvocationHandler {
         }
 
         // 2, 创建方法的描述, 包括 返回值类型 参数类型列表
-        var returnLayout = getMemoryLayout(method.getReturnType());
-        var paramLayouts = getMemoryLayouts(method.getParameterTypes());
-        var functionDescriptor = FunctionDescriptor.of(returnLayout, paramLayouts);
+        FunctionDescriptor functionDescriptor;
+
+        if (method.getReturnType() == void.class) {
+            var paramLayouts = getMemoryLayouts(method.getParameterTypes());
+            functionDescriptor = FunctionDescriptor.ofVoid(paramLayouts);
+        } else {
+            var returnLayout = getMemoryLayout(method.getReturnType());
+            var paramLayouts = getMemoryLayouts(method.getParameterTypes());
+            functionDescriptor = FunctionDescriptor.of(returnLayout, paramLayouts);
+        }
 
         // 3, 根据方法和描述, 获取可以调用本机方法的方法句柄
         return nativeLinker().downcallHandle(fun, functionDescriptor);
