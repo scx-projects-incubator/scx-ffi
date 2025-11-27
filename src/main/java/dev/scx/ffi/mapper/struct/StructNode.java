@@ -43,17 +43,26 @@ final class StructNode implements Node {
     }
 
     @Override
-    public long writeToMemorySegment(MemorySegment memorySegment, long offset, Object value) {
+    public long writeToMemorySegment(MemorySegment memorySegment, long offset, Object value) throws IllegalAccessException {
         long totalBytesWritten = 0;
         for (var fieldNode : fieldNodes) {
-            try {
+            // 这里不需要对 fieldInfo 判空, 因为 必定有值.
+            var fieldValue = fieldNode.fieldInfo().get(value);
+            totalBytesWritten += fieldNode.writeToMemorySegment(memorySegment, offset + totalBytesWritten, fieldValue);
+        }
+        return totalBytesWritten;
+    }
+
+    @Override
+    public long readFromMemorySegment(MemorySegment memorySegment, long offset, Object targetObject) throws IllegalAccessException {
+        long totalBytesWritten = 0;
+        for (var fieldNode : fieldNodes) {
+            // 如果是 StructNode 我们 写入子对象.
+            if (fieldNode instanceof StructNode structNode) {
                 // 这里不需要对 fieldInfo 判空, 因为 必定有值.
-                var fieldValue = fieldNode.fieldInfo().get(value);
-                totalBytesWritten += fieldNode.writeToMemorySegment(memorySegment, offset + totalBytesWritten, fieldValue);
-            } catch (Exception e) {
-                // todo 这里可能需要 精细化 处理异常?
-                throw new RuntimeException(e);
+                targetObject = fieldNode.fieldInfo().get(targetObject);
             }
+            totalBytesWritten += fieldNode.readFromMemorySegment(memorySegment, offset + totalBytesWritten, targetObject);
         }
         return totalBytesWritten;
     }

@@ -1,10 +1,12 @@
 package dev.scx.ffi.mapper.struct;
 
+import dev.scx.function.Function1Void;
 import dev.scx.reflect.FieldInfo;
 import dev.scx.reflect.PrimitiveTypeInfo;
 
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
+import java.util.function.Consumer;
 
 import static java.lang.foreign.ValueLayout.*;
 
@@ -81,6 +83,40 @@ final class PrimitiveNode implements Node {
             memorySegment.set(JAVA_CHAR, offset, (Character) value);
             return JAVA_CHAR.byteSize();
         } else {
+            // 这里几乎不可能发生
+            throw new IllegalArgumentException("Unsupported primitive type: " + type);
+        }
+    }
+
+    @Override
+    public long readFromMemorySegment(MemorySegment memorySegment, long offset, Object targetObject) throws IllegalAccessException {
+        var type = typeInfo.rawClass();
+        if (type == byte.class) {
+            fieldInfo.set(targetObject,memorySegment.get(JAVA_BYTE, offset));
+            return JAVA_BYTE.byteSize();
+        } else if (type == short.class) {
+            fieldInfo.set(targetObject,(memorySegment.get(JAVA_SHORT, offset)));
+            return JAVA_SHORT.byteSize();
+        } else if (type == int.class) {
+            fieldInfo.set(targetObject,(memorySegment.get(JAVA_INT, offset)));
+            return JAVA_INT.byteSize();
+        } else if (type == long.class) {
+            fieldInfo.set(targetObject,(memorySegment.get(JAVA_LONG, offset)));
+            return JAVA_LONG.byteSize();
+        } else if (type == float.class) {
+            fieldInfo.set(targetObject,(memorySegment.get(JAVA_FLOAT, offset)));
+            return JAVA_FLOAT.byteSize();
+        } else if (type == double.class) {
+            fieldInfo.set(targetObject,(memorySegment.get(JAVA_DOUBLE, offset)));
+            return JAVA_DOUBLE.byteSize();
+        } else if (type == boolean.class) {
+            fieldInfo.set(targetObject,(memorySegment.get(JAVA_BOOLEAN, offset)));
+            return JAVA_BOOLEAN.byteSize();
+        } else if (type == char.class) {
+            fieldInfo.set(targetObject,(memorySegment.get(JAVA_CHAR, offset)));
+            return JAVA_CHAR.byteSize();
+        } else {
+            // 这里几乎不可能发生
             throw new IllegalArgumentException("Unsupported primitive type: " + type);
         }
     }
