@@ -1,7 +1,7 @@
 package dev.scx.ffi.test.platform.c;
 
 import dev.scx.ffi.ScxFFI;
-import dev.scx.ffi.annotation.FFIName;
+import dev.scx.ffi.annotation.SymbolName;
 
 /// 提供一些 C 标准的接口
 ///
@@ -14,7 +14,7 @@ public interface C extends C1{
     long strlen(String str);
 
     // 测试别名
-    @FFIName("abs")
+    @SymbolName("abs")
     int javaAbs(int x);
 
     double sqrt(double x);
