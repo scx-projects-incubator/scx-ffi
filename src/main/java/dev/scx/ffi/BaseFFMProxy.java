@@ -1,18 +1,14 @@
 package dev.scx.ffi;
 
-import dev.scx.ffi.annotation.SymbolName;
 import dev.scx.ffi.mapper.FFMMapper;
 
 import java.lang.foreign.Arena;
-import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.MemorySegment;
-import java.lang.foreign.SymbolLookup;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import static dev.scx.ffi.FFMHelper.*;
-import static java.lang.foreign.Linker.nativeLinker;
+import static dev.scx.ffi.FFMHelper.convertToParameters;
 
 /// BaseFFMProxy
 ///
