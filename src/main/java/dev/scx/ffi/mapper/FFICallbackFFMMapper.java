@@ -19,17 +19,15 @@ import static java.lang.invoke.MethodHandles.lookup;
 /// @version 0.0.1
 public final class FFICallbackFFMMapper implements FFMMapper {
 
-    private final FFICallback callback;
-    private final MethodHandle fun;
+    private final MethodHandle methodHandle;
     private final FunctionDescriptor functionDescriptor;
 
     public FFICallbackFFMMapper(FFICallback callback) throws IllegalAccessException {
-        this.callback = callback;
         // 查找 对应方法
         var method = findFFICallbackMethod(callback);
         // 有时我们会遇到 callback 是一个 lambda 表达式的情况 这时需要 强制设置访问权限
         method.setAccessible(true);
-        this.fun = lookup().unreflect(method).bindTo(callback);
+        this.methodHandle = lookup().unreflect(method).bindTo(callback);
         if (method.getReturnType() == void.class) {
             var paramLayouts = getCallbackParameterMemoryLayouts(method.getParameterTypes());
             this.functionDescriptor = FunctionDescriptor.ofVoid(paramLayouts);
@@ -42,7 +40,7 @@ public final class FFICallbackFFMMapper implements FFMMapper {
 
     @Override
     public MemorySegment toMemorySegment(Arena arena) {
-        return nativeLinker().upcallStub(fun, functionDescriptor, arena);
+        return nativeLinker().upcallStub(methodHandle, functionDescriptor, arena);
     }
 
     @Override
