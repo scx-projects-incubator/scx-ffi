@@ -9,7 +9,6 @@ import java.lang.foreign.MemorySegment;
 
 import static dev.scx.ffi.mapper.struct.FFIStructSupport.createNode;
 
-///
 /// FFIStructFFMMapper
 ///
 /// 不建议直接使用, 推荐直接使用 [FFIStruct]
@@ -19,13 +18,13 @@ import static dev.scx.ffi.mapper.struct.FFIStructSupport.createNode;
 public final class FFIStructFFMMapper implements FFMMapper {
 
     private final Object ffiStruct;
-    private final StructNode node;
+    private final Node node;
     private final MemoryLayout memoryLayout;
 
     public FFIStructFFMMapper(FFIStruct ffiStruct) {
         this.ffiStruct = ffiStruct;
         // 1, 创建 树形结构 (这里必然是 StructNode)
-        this.node = (StructNode) createNode(ffiStruct.getClass());
+        this.node = createNode(ffiStruct.getClass());
         // 2, 创建 内存布局
         this.memoryLayout = this.node.createMemoryLayout();
     }
