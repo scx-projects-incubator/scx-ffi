@@ -43,7 +43,7 @@ record PrimitiveNode(String name, Class<?> type) implements Node {
     }
 
     @Override
-    public long writeToMemorySegment(MemorySegment memorySegment, int offset, Object value) {
+    public long writeToMemorySegment(MemorySegment memorySegment, long offset, Object value) {
         if (type == byte.class) {
             memorySegment.set(JAVA_BYTE, offset, (Byte) value);
             return JAVA_BYTE.byteSize();

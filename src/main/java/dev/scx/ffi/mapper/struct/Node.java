@@ -7,6 +7,6 @@ sealed interface Node permits MemorySegmentNode, PrimitiveNode, StructNode {
 
     MemoryLayout createMemoryLayout();
 
-    long writeToMemorySegment(MemorySegment memorySegment, int offset, Object value);
+    long writeToMemorySegment(MemorySegment memorySegment, long offset, Object value);
 
 }
