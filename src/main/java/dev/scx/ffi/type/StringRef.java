@@ -4,8 +4,6 @@ import java.nio.charset.Charset;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-// todo 这玩意合理吗?
-
 /// StringRef
 ///
 /// @author scx567888

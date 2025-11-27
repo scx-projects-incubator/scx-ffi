@@ -1,4 +1,6 @@
-package dev.scx.ffi.mapper;
+package dev.scx.ffi.mapper.primitive_array;
+
+import dev.scx.ffi.mapper.FFMMapper;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;

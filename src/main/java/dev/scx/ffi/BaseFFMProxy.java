@@ -1,18 +1,14 @@
 package dev.scx.ffi;
 
-import dev.scx.ffi.annotation.FFIName;
 import dev.scx.ffi.mapper.FFMMapper;
 
 import java.lang.foreign.Arena;
-import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.MemorySegment;
-import java.lang.foreign.SymbolLookup;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import static dev.scx.ffi.FFMHelper.*;
-import static java.lang.foreign.Linker.nativeLinker;
+import static dev.scx.ffi.FFMProxySupport.convertToParameters;
 
 /// BaseFFMProxy
 ///
@@ -20,13 +16,6 @@ import static java.lang.foreign.Linker.nativeLinker;
 /// @version 0.0.1
 abstract class BaseFFMProxy implements InvocationHandler {
 
-    private final SymbolLookup symbolLookup;
-
-    protected BaseFFMProxy(SymbolLookup symbolLookup) {
-        this.symbolLookup = symbolLookup;
-    }
-
-    // todo args 可能是 null ?
     @Override
     public final Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
@@ -72,32 +61,11 @@ abstract class BaseFFMProxy implements InvocationHandler {
                 }
             }
 
-            //5, 返回结果
+            // 5, 返回结果
             return result;
 
         }
 
-    }
-
-    /// 创建 FFMMethodHandle (用于子类使用)
-    protected final MethodHandle createFFMMethodHandle(Method method) {
-        // 0, 获取方法名
-        var ffiName = method.getAnnotation(FFIName.class);
-        var name = ffiName == null ? method.getName() : ffiName.value();
-
-        // 1, 根据方法名查找对应的方法
-        var fun = symbolLookup.find(name).orElse(null);
-        if (fun == null) {
-            throw new IllegalArgumentException("未找到对应外部方法 : " + method.getName());
-        }
-
-        // 2, 创建方法的描述, 包括 返回值类型 参数类型列表
-        var returnLayout = getMemoryLayout(method.getReturnType());
-        var paramLayouts = getMemoryLayouts(method.getParameterTypes());
-        var functionDescriptor = FunctionDescriptor.of(returnLayout, paramLayouts);
-
-        // 3, 根据方法和描述, 获取可以调用本机方法的方法句柄
-        return nativeLinker().downcallHandle(fun, functionDescriptor);
     }
 
     /// 获取 FFMMethodHandle
