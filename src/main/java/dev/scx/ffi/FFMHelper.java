@@ -42,33 +42,49 @@ public final class FFMHelper {
         if (type == Double.class || type == double.class) {
             return JAVA_DOUBLE;
         }
+        // 2, 处理基本类型的数组类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.sequenceLayout() , 因为我们不知道数组长度
+        if (type == byte[].class ||
+            type == short[].class ||
+            type == int[].class ||
+            type == long[].class ||
+            type == float[].class ||
+            type == double[].class ||
+            type == boolean[].class ||
+            type == char[].class) {
+            return ADDRESS;
+        }
+        // 3, 内置 基本类型 Ref
+        if (type == ByteRef.class ||
+            type == ShortRef.class ||
+            type == IntRef.class ||
+            type == LongRef.class ||
+            type == FloatRef.class ||
+            type == DoubleRef.class ||
+            type == BooleanRef.class ||
+            type == CharRef.class) {
+            return ADDRESS;
+        }
+        // 4, 处理字符串
+        if (type == String.class || type == StringRef.class) {
+            return ADDRESS;
+        }
+        // 5, 内存段
         if (type == MemorySegment.class) {
-            return ADDRESS;
-        }
-        // 3, 处理字符串 todo 这里存疑?
-        if (String.class == type) {
-            return ADDRESS;
-        }
-        // 4, 处理映射类型
-        if (FFMMapper.class.isAssignableFrom(type)) {
-            return ADDRESS;
-        }
-        // 5, 处理 结构体类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.structLayout(), 因为需要在运行时才知道具体结构
-        if (FFIStruct.class.isAssignableFrom(type)) {
             return ADDRESS;
         }
         // 6, 处理 Callback 类型
         if (FFICallback.class.isAssignableFrom(type)) {
             return ADDRESS;
         }
-        // 7, 处理基本类型的数组类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.sequenceLayout() , 因为我们不知道数组长度
-        if (type.isArray() && type.getComponentType().isPrimitive()) {
+        // 7, 处理 结构体类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.structLayout(), 因为需要在运行时才知道具体结构
+        if (FFIStruct.class.isAssignableFrom(type)) {
             return ADDRESS;
         }
-        // 8, 内置 Ref
-        if (type == ByteRef.class || type == CharRef.class || type == ShortRef.class || type == IntRef.class || type == LongRef.class || type == FloatRef.class || type == DoubleRef.class || type == StringRef.class) {
+        // 8, 处理映射类型
+        if (FFMMapper.class.isAssignableFrom(type)) {
             return ADDRESS;
         }
+        // 其余全不支持 !!!
         throw new IllegalArgumentException("不支持的参数类型 !!! " + type);
     }
 
