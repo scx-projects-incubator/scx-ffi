@@ -1,4 +1,4 @@
-package dev.scx.ffi.mapper;
+package dev.scx.ffi.mapper.callback;
 
 import dev.scx.ffi.type.FFICallback;
 import dev.scx.reflect.ClassInfo;

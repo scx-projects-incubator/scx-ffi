@@ -1,5 +1,6 @@
-package dev.scx.ffi.mapper;
+package dev.scx.ffi.mapper.callback;
 
+import dev.scx.ffi.mapper.FFMMapper;
 import dev.scx.ffi.type.FFICallback;
 
 import java.lang.foreign.Arena;
@@ -7,8 +8,8 @@ import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.MemorySegment;
 import java.lang.invoke.MethodHandle;
 
-import static dev.scx.ffi.mapper.FFICallbackSupport.createFunctionDescriptor;
-import static dev.scx.ffi.mapper.FFICallbackSupport.findFFICallbackMethod;
+import static dev.scx.ffi.mapper.callback.FFICallbackSupport.createFunctionDescriptor;
+import static dev.scx.ffi.mapper.callback.FFICallbackSupport.findFFICallbackMethod;
 import static java.lang.foreign.Linker.nativeLinker;
 import static java.lang.invoke.MethodHandles.lookup;
 
