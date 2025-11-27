@@ -7,7 +7,8 @@ import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.MemorySegment;
 import java.lang.invoke.MethodHandle;
 
-import static dev.scx.ffi.mapper.FFICallbackSupport.*;
+import static dev.scx.ffi.mapper.FFICallbackSupport.createFunctionDescriptor;
+import static dev.scx.ffi.mapper.FFICallbackSupport.findFFICallbackMethod;
 import static java.lang.foreign.Linker.nativeLinker;
 import static java.lang.invoke.MethodHandles.lookup;
 
@@ -23,19 +24,9 @@ public final class FFICallbackFFMMapper implements FFMMapper {
     private final FunctionDescriptor functionDescriptor;
 
     public FFICallbackFFMMapper(FFICallback callback) throws IllegalAccessException {
-        // 查找 对应方法
         var callbackMethod = findFFICallbackMethod(callback);
-        // 有时我们会遇到 callback 是一个 lambda 表达式的情况 这时需要 强制设置访问权限
-        callbackMethod.setAccessible(true);
         this.methodHandle = lookup().unreflect(callbackMethod).bindTo(callback);
-        if (callbackMethod.getReturnType() == void.class) {
-            var paramLayouts = getCallbackParameterMemoryLayouts(callbackMethod.getParameterTypes());
-            this.functionDescriptor = FunctionDescriptor.ofVoid(paramLayouts);
-        } else {
-            var returnLayout = getCallbackReturnMemoryLayout(callbackMethod.getReturnType());
-            var paramLayouts = getCallbackParameterMemoryLayouts(callbackMethod.getParameterTypes());
-            this.functionDescriptor = FunctionDescriptor.of(returnLayout, paramLayouts);
-        }
+        this.functionDescriptor = createFunctionDescriptor(callbackMethod);
     }
 
     @Override
