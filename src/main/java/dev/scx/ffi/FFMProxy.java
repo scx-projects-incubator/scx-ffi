@@ -8,17 +8,20 @@ import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
+import static dev.scx.ffi.FFMHelper.createFFMMethodHandle;
+
 /// FFMProxy
 ///
 /// @author scx567888
 /// @version 0.0.1
 final class FFMProxy extends BaseFFMProxy {
 
+    private final SymbolLookup symbolLookup;
     /// 这里只有读操作 所以 HashMap 即可保证线程安全.
     private final HashMap<Method, MethodHandle> ffmMethodHandleCache;
 
     public <T> FFMProxy(Class<T> clazz, SymbolLookup symbolLookup) {
-        super(symbolLookup);
+        this.symbolLookup = symbolLookup;
         this.ffmMethodHandleCache = initFFMMethodHandleCache(clazz);
     }
 
@@ -32,7 +35,7 @@ final class FFMProxy extends BaseFFMProxy {
             for (var methodInfo : methodInfos) {
                 // 这里只 处理 abstract 方法.
                 if (methodInfo.isAbstract()) {
-                    cache.put(methodInfo.rawMethod(), createFFMMethodHandle(methodInfo.rawMethod()));
+                    cache.put(methodInfo.rawMethod(), createFFMMethodHandle(symbolLookup, methodInfo.rawMethod()));
                 }
             }
             return cache;

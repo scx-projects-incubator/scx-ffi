@@ -1,11 +1,17 @@
 package dev.scx.ffi;
 
+import dev.scx.ffi.annotation.SymbolName;
 import dev.scx.ffi.mapper.*;
 import dev.scx.ffi.type.*;
 
+import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.SymbolLookup;
+import java.lang.invoke.MethodHandle;
+import java.lang.reflect.Method;
 
+import static java.lang.foreign.Linker.nativeLinker;
 import static java.lang.foreign.ValueLayout.*;
 
 /// FFMHelper
@@ -151,6 +157,34 @@ public final class FFMHelper {
             result[i] = convertToParameter(objs[i]);
         }
         return result;
+    }
+
+    /// 创建 FFMMethodHandle
+    public static MethodHandle createFFMMethodHandle(SymbolLookup symbolLookup, Method method) {
+        // 0, 获取方法名
+        var symbolName = method.getAnnotation(SymbolName.class);
+        var name = symbolName == null ? method.getName() : symbolName.value();
+
+        // 1, 根据方法名查找对应的方法
+        var fun = symbolLookup.find(name).orElse(null);
+        if (fun == null) {
+            throw new IllegalArgumentException("未找到对应外部方法 : " + method.getName());
+        }
+
+        // 2, 创建方法的描述, 包括 返回值类型 参数类型列表
+        FunctionDescriptor functionDescriptor;
+
+        if (method.getReturnType() == void.class) {
+            var paramLayouts = getMemoryLayouts(method.getParameterTypes());
+            functionDescriptor = FunctionDescriptor.ofVoid(paramLayouts);
+        } else {
+            var returnLayout = getMemoryLayout(method.getReturnType());
+            var paramLayouts = getMemoryLayouts(method.getParameterTypes());
+            functionDescriptor = FunctionDescriptor.of(returnLayout, paramLayouts);
+        }
+
+        // 3, 根据方法和描述, 获取可以调用本机方法的方法句柄
+        return nativeLinker().downcallHandle(fun, functionDescriptor);
     }
 
 }
