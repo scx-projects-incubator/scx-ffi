@@ -7,7 +7,7 @@ import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.MemorySegment;
 import java.lang.invoke.MethodHandle;
 
-import static dev.scx.ffi.FFMHelper.*;
+import static dev.scx.ffi.mapper.FFICallbackSupport.*;
 import static java.lang.foreign.Linker.nativeLinker;
 import static java.lang.invoke.MethodHandles.lookup;
 
@@ -24,16 +24,16 @@ public final class FFICallbackFFMMapper implements FFMMapper {
 
     public FFICallbackFFMMapper(FFICallback callback) throws IllegalAccessException {
         // 查找 对应方法
-        var method = findFFICallbackMethod(callback);
+        var callbackMethod = findFFICallbackMethod(callback);
         // 有时我们会遇到 callback 是一个 lambda 表达式的情况 这时需要 强制设置访问权限
-        method.setAccessible(true);
-        this.methodHandle = lookup().unreflect(method).bindTo(callback);
-        if (method.getReturnType() == void.class) {
-            var paramLayouts = getCallbackParameterMemoryLayouts(method.getParameterTypes());
+        callbackMethod.setAccessible(true);
+        this.methodHandle = lookup().unreflect(callbackMethod).bindTo(callback);
+        if (callbackMethod.getReturnType() == void.class) {
+            var paramLayouts = getCallbackParameterMemoryLayouts(callbackMethod.getParameterTypes());
             this.functionDescriptor = FunctionDescriptor.ofVoid(paramLayouts);
         } else {
-            var returnLayout = getReturnMemoryLayout(method.getReturnType());
-            var paramLayouts = getCallbackParameterMemoryLayouts(method.getParameterTypes());
+            var returnLayout = getCallbackReturnMemoryLayout(callbackMethod.getReturnType());
+            var paramLayouts = getCallbackParameterMemoryLayouts(callbackMethod.getParameterTypes());
             this.functionDescriptor = FunctionDescriptor.of(returnLayout, paramLayouts);
         }
     }
