@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import static dev.scx.ffi.FFMHelper.convertToParameters;
+import static dev.scx.ffi.FFMHelper.convertToReturn;
 
 /// BaseFFMProxy
 ///
@@ -61,7 +62,13 @@ abstract class BaseFFMProxy implements InvocationHandler {
                 }
             }
 
-            //5, 返回结果
+            // 5, 处理特殊返回值
+            var returnType = method.getReturnType();
+            if (returnType != MemorySegment.class && result instanceof MemorySegment memorySegment) {
+                return convertToReturn(returnType, memorySegment);
+            }
+
+            // 6, 返回结果
             return result;
 
         }
