@@ -4,7 +4,7 @@ package dev.scx.ffi.type;
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class BooleanRef {
+public final class BooleanRef {
 
     private boolean value;
 
