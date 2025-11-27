@@ -1,5 +1,6 @@
-package dev.scx.ffi.mapper;
+package dev.scx.ffi.mapper.primitive_ref;
 
+import dev.scx.ffi.mapper.FFMMapper;
 import dev.scx.ffi.type.LongRef;
 
 import java.lang.foreign.Arena;
