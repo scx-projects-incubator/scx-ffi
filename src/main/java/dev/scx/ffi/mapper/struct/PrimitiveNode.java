@@ -1,6 +1,7 @@
 package dev.scx.ffi.mapper.struct;
 
 import java.lang.foreign.MemoryLayout;
+import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.*;
 import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
@@ -39,6 +40,37 @@ record PrimitiveNode(String name, Class<?> type) implements Node {
         }
         // 这里几乎不可能发生
         throw new IllegalArgumentException("type not primitive: " + type);
+    }
+
+    @Override
+    public long writeToMemorySegment(MemorySegment memorySegment, int offset, Object value) {
+        if (type == byte.class) {
+            memorySegment.set(JAVA_BYTE, offset, (Byte) value);
+            return JAVA_BYTE.byteSize();
+        } else if (type == short.class) {
+            memorySegment.set(JAVA_SHORT, offset, (Short) value);
+            return JAVA_SHORT.byteSize();
+        } else if (type == int.class) {
+            memorySegment.set(JAVA_INT, offset, (Integer) value);
+            return JAVA_INT.byteSize();
+        } else if (type == long.class) {
+            memorySegment.set(JAVA_LONG, offset, (Long) value);
+            return JAVA_LONG.byteSize();
+        } else if (type == float.class) {
+            memorySegment.set(JAVA_FLOAT, offset, (Float) value);
+            return JAVA_FLOAT.byteSize();
+        } else if (type == double.class) {
+            memorySegment.set(JAVA_DOUBLE, offset, (Double) value);
+            return JAVA_DOUBLE.byteSize();
+        } else if (type == boolean.class) {
+            memorySegment.set(JAVA_BOOLEAN, offset, (Boolean) value);
+            return JAVA_BOOLEAN.byteSize();
+        } else if (type == char.class) {
+            memorySegment.set(JAVA_CHAR, offset, (Character) value);
+            return JAVA_CHAR.byteSize();
+        } else {
+            throw new IllegalArgumentException("Unsupported primitive type: " + type);
+        }
     }
 
 }
