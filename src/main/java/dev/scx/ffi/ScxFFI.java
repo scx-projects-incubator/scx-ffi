@@ -16,14 +16,14 @@ import static java.lang.foreign.SymbolLookup.libraryLookup;
 /// ScxFFI
 ///
 /// ### 支持的参数和返回值类型
-/// - 基本类型: `byte`, `short`, `int`, `long`, `float`, `double`, `boolean`, `char`.
-/// - 基本类型数组: `byte[]`, `short[]`, `int[]`, `long[]`, `float[]`, `double[]`, `boolean[]`, `char[]`.
-/// - 基本类型引用: [ByteRef], [ShortRef], [IntRef], [LongRef], [FloatRef], [DoubleRef], [BooleanRef], [CharRef].
-/// - 字符串: [String], [StringRef].
-/// - 回调: [FFICallback].
-/// - 结构体: [FFIStruct].
-/// - 内存段: [MemorySegment].
-/// - 自定义映射: [FFMMapper].
+/// - 1. 基本类型: `byte`, `short`, `int`, `long`, `float`, `double`, `boolean`, `char`.
+/// - 2. 基本类型数组: `byte[]`, `short[]`, `int[]`, `long[]`, `float[]`, `double[]`, `boolean[]`, `char[]`.
+/// - 3. 基本类型引用: [ByteRef], [ShortRef], [IntRef], [LongRef], [FloatRef], [DoubleRef], [BooleanRef], [CharRef].
+/// - 4. 字符串: [String], [StringRef].
+/// - 5. 内存段: [MemorySegment].
+/// - 6. 回调: [FFICallback].
+/// - 7. 结构体: [FFIStruct].
+/// - 8. 自定义映射: [FFMMapper].
 ///
 /// ### 关于方法名映射
 /// - 默认直接使用 接口中定义的方法名进行映射, 如果需要自定义名称 请使用 [SymbolName] 注解.
