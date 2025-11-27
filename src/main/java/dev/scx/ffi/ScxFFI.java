@@ -1,5 +1,10 @@
 package dev.scx.ffi;
 
+import dev.scx.ffi.annotation.SymbolName;
+import dev.scx.ffi.mapper.FFMMapper;
+import dev.scx.ffi.type.*;
+
+import java.lang.foreign.MemorySegment;
 import java.lang.foreign.SymbolLookup;
 import java.lang.reflect.Proxy;
 import java.nio.file.Path;
@@ -9,6 +14,19 @@ import static java.lang.foreign.Linker.nativeLinker;
 import static java.lang.foreign.SymbolLookup.libraryLookup;
 
 /// ScxFFI
+///
+/// ### 支持的参数和返回值类型
+/// - 基本类型: `byte`, `short`, `int`, `long`, `float`, `double`, `boolean`, `char`.
+/// - 基本类型数组: `byte[]`, `short[]`, `int[]`, `long[]`, `float[]`, `double[]`, `boolean[]`, `char[]`.
+/// - 基本类型引用: [ByteRef], [ShortRef], [IntRef], [LongRef], [FloatRef], [DoubleRef], [BooleanRef], [CharRef].
+/// - 字符串: [String], [StringRef].
+/// - 回调: [FFICallback].
+/// - 结构体: [FFIStruct].
+/// - 内存段: [MemorySegment].
+/// - 自定义映射: [FFMMapper].
+///
+/// ### 关于方法名映射
+/// - 默认直接使用 接口中定义的方法名进行映射, 如果需要自定义名称 请使用 [SymbolName] 注解.
 ///
 /// @author scx567888
 /// @version 0.0.1
