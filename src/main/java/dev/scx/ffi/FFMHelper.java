@@ -20,30 +20,30 @@ import static java.lang.foreign.ValueLayout.*;
 /// @version 0.0.1
 public final class FFMHelper {
 
-    public static MemoryLayout getMemoryLayout(Class<?> type) {
+    public static MemoryLayout getParameterMemoryLayout(Class<?> type) {
         // 1, 先处理可以直接映射的基本类型
-        if (type == byte.class || type == Byte.class) {
+        if (type == byte.class) {
             return JAVA_BYTE;
         }
-        if (type == short.class || type == Short.class) {
+        if (type == short.class) {
             return JAVA_SHORT;
         }
-        if (type == int.class || type == Integer.class) {
+        if (type == int.class) {
             return JAVA_INT;
         }
-        if (type == long.class || type == Long.class) {
+        if (type == long.class) {
             return JAVA_LONG;
         }
-        if (type == float.class || type == Float.class) {
+        if (type == float.class) {
             return JAVA_FLOAT;
         }
-        if (type == double.class || type == Double.class) {
+        if (type == double.class) {
             return JAVA_DOUBLE;
         }
-        if (type == boolean.class || type == Boolean.class) {
+        if (type == boolean.class) {
             return JAVA_BOOLEAN;
         }
-        if (type == char.class || type == Character.class) {
+        if (type == char.class) {
             return JAVA_CHAR;
         }
         // 2, 处理基本类型的数组类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.sequenceLayout() , 因为我们不知道数组长度
@@ -92,10 +92,52 @@ public final class FFMHelper {
         throw new IllegalArgumentException("不支持的参数类型 !!! " + type);
     }
 
-    public static MemoryLayout[] getMemoryLayouts(Class<?>[] types) {
+    public static MemoryLayout getReturnMemoryLayout(Class<?> type) {
+        // 1, 先处理可以直接映射的基本类型
+        if (type == byte.class) {
+            return JAVA_BYTE;
+        }
+        if (type == short.class) {
+            return JAVA_SHORT;
+        }
+        if (type == int.class) {
+            return JAVA_INT;
+        }
+        if (type == long.class) {
+            return JAVA_LONG;
+        }
+        if (type == float.class) {
+            return JAVA_FLOAT;
+        }
+        if (type == double.class) {
+            return JAVA_DOUBLE;
+        }
+        if (type == boolean.class) {
+            return JAVA_BOOLEAN;
+        }
+        if (type == char.class) {
+            return JAVA_CHAR;
+        }
+        // 2, 处理字符串 todo ? 存疑?
+        if (type == String.class) {
+            return ADDRESS;
+        }
+        // 3, 内存段
+        if (type == MemorySegment.class) {
+            return ADDRESS;
+        }
+        // 4, 处理 结构体类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.structLayout(), 因为需要在运行时才知道具体结构
+        if (FFIStruct.class.isAssignableFrom(type)) {
+            return ADDRESS;
+        }
+        // 其余全不支持 !!!
+        throw new IllegalArgumentException("不支持的返回值类型 !!! " + type);
+    }
+
+    public static MemoryLayout[] getParameterMemoryLayouts(Class<?>[] types) {
         var memoryLayouts = new MemoryLayout[types.length];
         for (var i = 0; i < types.length; i = i + 1) {
-            memoryLayouts[i] = getMemoryLayout(types[i]);
+            memoryLayouts[i] = getParameterMemoryLayout(types[i]);
         }
         return memoryLayouts;
     }
@@ -175,11 +217,11 @@ public final class FFMHelper {
         FunctionDescriptor functionDescriptor;
 
         if (method.getReturnType() == void.class) {
-            var paramLayouts = getMemoryLayouts(method.getParameterTypes());
+            var paramLayouts = getParameterMemoryLayouts(method.getParameterTypes());
             functionDescriptor = FunctionDescriptor.ofVoid(paramLayouts);
         } else {
-            var returnLayout = getMemoryLayout(method.getReturnType());
-            var paramLayouts = getMemoryLayouts(method.getParameterTypes());
+            var returnLayout = getReturnMemoryLayout(method.getReturnType());
+            var paramLayouts = getParameterMemoryLayouts(method.getParameterTypes());
             functionDescriptor = FunctionDescriptor.of(returnLayout, paramLayouts);
         }
 
