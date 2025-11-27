@@ -8,7 +8,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import static dev.scx.ffi.FFMSupport.convertToParameters;
+import static dev.scx.ffi.FFMProxySupport.convertToParameters;
 
 /// BaseFFMProxy
 ///

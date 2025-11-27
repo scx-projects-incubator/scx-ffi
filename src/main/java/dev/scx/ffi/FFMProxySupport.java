@@ -18,7 +18,42 @@ import static java.lang.foreign.ValueLayout.*;
 ///
 /// @author scx567888
 /// @version 0.0.1
-final class FFMSupport {
+final class FFMProxySupport {
+
+    /// 获取 方法 返回值的 内存布局
+    public static MemoryLayout getReturnMemoryLayout(Class<?> type) {
+        // 1, 先处理可以直接映射的基本类型
+        if (type == byte.class) {
+            return JAVA_BYTE;
+        }
+        if (type == short.class) {
+            return JAVA_SHORT;
+        }
+        if (type == int.class) {
+            return JAVA_INT;
+        }
+        if (type == long.class) {
+            return JAVA_LONG;
+        }
+        if (type == float.class) {
+            return JAVA_FLOAT;
+        }
+        if (type == double.class) {
+            return JAVA_DOUBLE;
+        }
+        if (type == boolean.class) {
+            return JAVA_BOOLEAN;
+        }
+        if (type == char.class) {
+            return JAVA_CHAR;
+        }
+        // 2, 内存段
+        if (type == MemorySegment.class) {
+            return ADDRESS;
+        }
+        // 其余全不支持 !!!
+        throw new IllegalArgumentException("不支持的返回值类型 !!! " + type);
+    }
 
     /// 获取 方法 参数的 内存布局
     public static MemoryLayout getParameterMemoryLayout(Class<?> type) {
@@ -93,41 +128,7 @@ final class FFMSupport {
         throw new IllegalArgumentException("不支持的参数类型 !!! " + type);
     }
 
-    /// 获取 方法 返回值的 内存布局
-    public static MemoryLayout getReturnMemoryLayout(Class<?> type) {
-        // 1, 先处理可以直接映射的基本类型
-        if (type == byte.class) {
-            return JAVA_BYTE;
-        }
-        if (type == short.class) {
-            return JAVA_SHORT;
-        }
-        if (type == int.class) {
-            return JAVA_INT;
-        }
-        if (type == long.class) {
-            return JAVA_LONG;
-        }
-        if (type == float.class) {
-            return JAVA_FLOAT;
-        }
-        if (type == double.class) {
-            return JAVA_DOUBLE;
-        }
-        if (type == boolean.class) {
-            return JAVA_BOOLEAN;
-        }
-        if (type == char.class) {
-            return JAVA_CHAR;
-        }
-        // 2, 内存段
-        if (type == MemorySegment.class) {
-            return ADDRESS;
-        }
-        // 其余全不支持 !!!
-        throw new IllegalArgumentException("不支持的返回值类型 !!! " + type);
-    }
-
+    /// 获取 方法 参数的 内存布局
     public static MemoryLayout[] getParameterMemoryLayouts(Class<?>[] types) {
         var memoryLayouts = new MemoryLayout[types.length];
         for (var i = 0; i < types.length; i = i + 1) {
@@ -179,6 +180,7 @@ final class FFMSupport {
             case FFMMapper m -> m;
             // 9, 空值
             case null -> MemorySegment.NULL;
+            // 其余抛异常
             default -> throw new IllegalArgumentException("无法转换的类型 !!! " + o.getClass());
         };
     }
