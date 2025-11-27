@@ -1,14 +1,11 @@
 package dev.scx.ffi.mapper.struct;
 
-import dev.scx.function.Function1Void;
 import dev.scx.reflect.FieldInfo;
 
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
-import java.util.function.Consumer;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
-import static java.lang.foreign.ValueLayout.JAVA_BYTE;
 
 final class MemorySegmentNode implements Node {
 
@@ -39,8 +36,8 @@ final class MemorySegmentNode implements Node {
     }
 
     @Override
-    public long readFromMemorySegment(MemorySegment memorySegment, long offset,  Object targetObject) throws IllegalAccessException {
-        fieldInfo.set(targetObject,memorySegment.get(ADDRESS, offset));
+    public long readFromMemorySegment(MemorySegment memorySegment, long offset, Object targetObject) throws IllegalAccessException {
+        fieldInfo.set(targetObject, memorySegment.get(ADDRESS, offset));
         return ADDRESS.byteSize();
     }
 
