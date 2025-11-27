@@ -14,12 +14,13 @@ import java.lang.reflect.Method;
 import static java.lang.foreign.Linker.nativeLinker;
 import static java.lang.foreign.ValueLayout.*;
 
-/// FFMHelper
+/// 内部构建辅助类
 ///
 /// @author scx567888
 /// @version 0.0.1
-public final class FFMHelper {
+final class FFMSupport {
 
+    /// 获取 方法 参数的 内存布局
     public static MemoryLayout getParameterMemoryLayout(Class<?> type) {
         // 1, 先处理可以直接映射的基本类型
         if (type == byte.class) {
@@ -92,6 +93,7 @@ public final class FFMHelper {
         throw new IllegalArgumentException("不支持的参数类型 !!! " + type);
     }
 
+    /// 获取 方法 返回值的 内存布局
     public static MemoryLayout getReturnMemoryLayout(Class<?> type) {
         // 1, 先处理可以直接映射的基本类型
         if (type == byte.class) {
@@ -118,62 +120,12 @@ public final class FFMHelper {
         if (type == char.class) {
             return JAVA_CHAR;
         }
-        // 2, 处理字符串 todo ? 存疑?
-        if (type == String.class) {
-            return ADDRESS;
-        }
-        // 3, 内存段
+        // 2, 内存段
         if (type == MemorySegment.class) {
-            return ADDRESS;
-        }
-        // 4, 处理 结构体类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.structLayout(), 因为需要在运行时才知道具体结构
-        if (FFIStruct.class.isAssignableFrom(type)) {
             return ADDRESS;
         }
         // 其余全不支持 !!!
         throw new IllegalArgumentException("不支持的返回值类型 !!! " + type);
-    }
-
-    public static MemoryLayout getFieldMemoryLayout(Class<?> type) {
-        // 1, 先处理可以直接映射的基本类型
-        if (type == byte.class) {
-            return JAVA_BYTE;
-        }
-        if (type == short.class) {
-            return JAVA_SHORT;
-        }
-        if (type == int.class) {
-            return JAVA_INT;
-        }
-        if (type == long.class) {
-            return JAVA_LONG;
-        }
-        if (type == float.class) {
-            return JAVA_FLOAT;
-        }
-        if (type == double.class) {
-            return JAVA_DOUBLE;
-        }
-        if (type == boolean.class) {
-            return JAVA_BOOLEAN;
-        }
-        if (type == char.class) {
-            return JAVA_CHAR;
-        }
-        // 2, 处理字符串 todo ? 存疑?
-        if (type == String.class) {
-            return ADDRESS;
-        }
-        // 3, 内存段
-        if (type == MemorySegment.class) {
-            return ADDRESS;
-        }
-        // 4, 处理 结构体类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.structLayout(), 因为需要在运行时才知道具体结构
-        if (FFIStruct.class.isAssignableFrom(type)) {
-            return ADDRESS;
-        }
-        // 其余全不支持 !!!
-        throw new IllegalArgumentException("不支持的 字段 类型 !!! " + type);
     }
 
     public static MemoryLayout[] getParameterMemoryLayouts(Class<?>[] types) {
@@ -184,16 +136,8 @@ public final class FFMHelper {
         return memoryLayouts;
     }
 
-    public static MemoryLayout[] getFieldMemoryLayouts(Class<?>[] types) {
-        var memoryLayouts = new MemoryLayout[types.length];
-        for (var i = 0; i < types.length; i = i + 1) {
-            memoryLayouts[i] = getFieldMemoryLayout(types[i]);
-        }
-        return memoryLayouts;
-    }
-
-    /// 返回值 只允许 (基本类型 | MemorySegment | FFMMapper) 三种
-    public static Object convertToParameter(Object o) throws NoSuchMethodException, IllegalAccessException {
+    /// 转换成 (基本类型 | MemorySegment | FFMMapper) 三种
+    public static Object convertToParameter(Object o) throws IllegalAccessException {
         return switch (o) {
             // 1, 基本值 (FFM 能够直接处理, 无需转换)
             case Byte _,
@@ -239,7 +183,8 @@ public final class FFMHelper {
         };
     }
 
-    public static Object[] convertToParameters(Object[] objs) throws NoSuchMethodException, IllegalAccessException {
+    /// 转换成 (基本类型 | MemorySegment | FFMMapper) 三种
+    public static Object[] convertToParameters(Object[] objs) throws IllegalAccessException {
         // 针对 null 做防御处理
         if (objs == null) {
             return new Object[0];

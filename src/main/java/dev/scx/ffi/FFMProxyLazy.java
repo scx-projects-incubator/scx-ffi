@@ -5,7 +5,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static dev.scx.ffi.FFMHelper.createFFMMethodHandle;
+import static dev.scx.ffi.FFMSupport.createFFMMethodHandle;
 
 /// 懒加载 方式
 final class FFMProxyLazy extends BaseFFMProxy {
