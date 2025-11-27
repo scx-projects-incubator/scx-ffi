@@ -23,9 +23,9 @@ public final class FFICallbackFFMMapper implements FFMMapper {
     private final MethodHandle methodHandle;
     private final FunctionDescriptor functionDescriptor;
 
-    public FFICallbackFFMMapper(FFICallback callback) throws IllegalAccessException {
-        var callbackMethod = findFFICallbackMethod(callback);
-        this.methodHandle = lookup().unreflect(callbackMethod).bindTo(callback);
+    public FFICallbackFFMMapper(FFICallback ffiCallback) throws IllegalAccessException {
+        var callbackMethod = findFFICallbackMethod(ffiCallback);
+        this.methodHandle = lookup().unreflect(callbackMethod).bindTo(ffiCallback);
         this.functionDescriptor = createFunctionDescriptor(callbackMethod);
     }
 
