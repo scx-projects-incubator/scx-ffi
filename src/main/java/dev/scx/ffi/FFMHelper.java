@@ -113,6 +113,7 @@ public final class FFMHelper {
             case long[] c -> new LongArrayFFMMapper(c);
             case float[] c -> new FloatArrayFFMMapper(c);
             case double[] c -> new DoubleArrayFFMMapper(c);
+            case boolean[] c -> new BooleanArrayFFMMapper(c);
             case char[] c -> new CharArrayFFMMapper(c);
             // 3, 内置 Ref
             case ByteRef r -> new ByteRefFFMMapper(r);
@@ -121,6 +122,7 @@ public final class FFMHelper {
             case LongRef r -> new LongRefFFMMapper(r);
             case FloatRef r -> new FloatRefFFMMapper(r);
             case DoubleRef r -> new DoubleRefFFMMapper(r);
+            case BooleanRef r -> new BooleanRefFFMMapper(r);
             case CharRef r -> new CharRefFFMMapper(r);
             // 4, 字符串
             case String s -> new StringFFMMapper(s);
