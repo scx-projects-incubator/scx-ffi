@@ -2,6 +2,12 @@ package dev.scx.ffi;
 
 import dev.scx.ffi.annotation.SymbolName;
 import dev.scx.ffi.mapper.*;
+import dev.scx.ffi.mapper.callback.FFICallbackFFMMapper;
+import dev.scx.ffi.mapper.primitive_array.*;
+import dev.scx.ffi.mapper.primitive_ref.*;
+import dev.scx.ffi.mapper.string.StringFFMMapper;
+import dev.scx.ffi.mapper.string.StringRefFFMMapper;
+import dev.scx.ffi.mapper.struct.FFIStructFFMMapper;
 import dev.scx.ffi.type.*;
 
 import java.lang.foreign.FunctionDescriptor;
