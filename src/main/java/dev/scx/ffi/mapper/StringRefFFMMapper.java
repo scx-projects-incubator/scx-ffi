@@ -5,7 +5,6 @@ import dev.scx.ffi.type.StringRef;
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
-/// todo 现在是只读的 应该也允许回显吧
 /// StringRefFFMMapper
 ///
 /// @author scx567888
@@ -19,7 +18,7 @@ public record StringRefFFMMapper(StringRef stringRef) implements FFMMapper {
 
     @Override
     public void fromMemorySegment(MemorySegment memorySegment) {
-        // todo 这里 怎么做?
+        stringRef.setValue(memorySegment.getString(0, stringRef.getCharset()));
     }
 
 }
