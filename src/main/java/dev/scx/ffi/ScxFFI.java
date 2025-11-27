@@ -27,9 +27,7 @@ import static java.lang.foreign.SymbolLookup.libraryLookup;
 ///
 ///### 支持的返回值类型
 /// - 1. 基本类型: `byte`, `short`, `int`, `long`, `float`, `double`, `boolean`, `char`.
-/// - 2. 字符串: [String]. todo ? 存疑?
-/// - 3. 内存段: [MemorySegment].
-/// - 4. 结构体: [FFIStruct].
+/// - 2. 内存段: [MemorySegment].
 ///
 /// ### 关于方法名映射
 /// - 默认直接使用 接口中定义的方法名进行映射, 如果需要自定义名称 请使用 [SymbolName] 注解.
