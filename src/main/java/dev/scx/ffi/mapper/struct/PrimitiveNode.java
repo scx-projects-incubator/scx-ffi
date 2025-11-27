@@ -1,49 +1,56 @@
 package dev.scx.ffi.mapper.struct;
 
+import dev.scx.reflect.FieldInfo;
+import dev.scx.reflect.PrimitiveTypeInfo;
+
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.*;
-import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
-import static java.lang.foreign.ValueLayout.JAVA_CHAR;
-import static java.lang.foreign.ValueLayout.JAVA_DOUBLE;
-import static java.lang.foreign.ValueLayout.JAVA_FLOAT;
-import static java.lang.foreign.ValueLayout.JAVA_LONG;
 
-record PrimitiveNode(String name, Class<?> type) implements Node {
+final class PrimitiveNode implements Node {
+
+    private final FieldInfo fieldInfo;
+    private final PrimitiveTypeInfo typeInfo;
+
+    public PrimitiveNode(FieldInfo fieldInfo, PrimitiveTypeInfo typeInfo) {
+        this.fieldInfo = fieldInfo;
+        this.typeInfo = typeInfo;
+    }
 
     @Override
     public MemoryLayout createMemoryLayout() {
+        var type = typeInfo.rawClass();
+        MemoryLayout memoryLayout;
         if (type == byte.class) {
-            return JAVA_BYTE.withName(name);
+            memoryLayout = JAVA_BYTE;
+        } else if (type == short.class) {
+            memoryLayout = JAVA_SHORT;
+        } else if (type == int.class) {
+            memoryLayout = JAVA_INT;
+        } else if (type == long.class) {
+            memoryLayout = JAVA_LONG;
+        } else if (type == float.class) {
+            memoryLayout = JAVA_FLOAT;
+        } else if (type == double.class) {
+            memoryLayout = JAVA_DOUBLE;
+        } else if (type == boolean.class) {
+            memoryLayout = JAVA_BOOLEAN;
+        } else if (type == char.class) {
+            memoryLayout = JAVA_CHAR;
+        } else {
+            // 这里几乎不可能发生
+            throw new IllegalArgumentException("type not primitive: " + type);
         }
-        if (type == short.class) {
-            return JAVA_SHORT.withName(name);
+        if (fieldInfo != null) {
+            memoryLayout = memoryLayout.withName(fieldInfo.name());
         }
-        if (type == int.class) {
-            return JAVA_INT.withName(name);
-        }
-        if (type == long.class) {
-            return JAVA_LONG.withName(name);
-        }
-        if (type == float.class) {
-            return JAVA_FLOAT.withName(name);
-        }
-        if (type == double.class) {
-            return JAVA_DOUBLE.withName(name);
-        }
-        if (type == boolean.class) {
-            return JAVA_BOOLEAN.withName(name);
-        }
-        if (type == char.class) {
-            return JAVA_CHAR.withName(name);
-        }
-        // 这里几乎不可能发生
-        throw new IllegalArgumentException("type not primitive: " + type);
+        return memoryLayout;
     }
 
     @Override
     public long writeToMemorySegment(MemorySegment memorySegment, long offset, Object value) {
+        var type = typeInfo.rawClass();
         if (type == byte.class) {
             memorySegment.set(JAVA_BYTE, offset, (Byte) value);
             return JAVA_BYTE.byteSize();
