@@ -14,7 +14,7 @@ import java.util.HashMap;
 /// @version 0.0.1
 final class FFMProxy extends BaseFFMProxy {
 
-    /// 这里只会读取 所以 HashMap 即可保证线程安全.
+    /// 这里只有读操作 所以 HashMap 即可保证线程安全.
     private final HashMap<Method, MethodHandle> ffmMethodHandleCache;
 
     public <T> FFMProxy(Class<T> clazz, SymbolLookup symbolLookup) {

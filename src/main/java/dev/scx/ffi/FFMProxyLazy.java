@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 
 /// 懒加载 方式
-class FFMProxyLazy extends BaseFFMProxy {
+final class FFMProxyLazy extends BaseFFMProxy {
 
     private final ConcurrentHashMap<Method, MethodHandle> ffmMethodHandleCache;
 
