@@ -25,6 +25,11 @@ final class MemorySegmentNode implements Node {
     }
 
     @Override
+    public FieldInfo fieldInfo() {
+        return fieldInfo;
+    }
+
+    @Override
     public long writeToMemorySegment(MemorySegment memorySegment, long offset, Object value) {
         if (value instanceof MemorySegment seg) {
             memorySegment.set(ADDRESS, offset, seg);
