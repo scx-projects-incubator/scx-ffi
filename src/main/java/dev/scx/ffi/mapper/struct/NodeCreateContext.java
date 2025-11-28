@@ -1,6 +1,7 @@
 package dev.scx.ffi.mapper.struct;
 
 import dev.scx.reflect.TypeInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 

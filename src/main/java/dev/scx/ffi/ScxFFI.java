@@ -25,7 +25,7 @@ import static java.lang.foreign.SymbolLookup.libraryLookup;
 /// - 7. 回调: [FFICallback].
 /// - 8. 自定义映射: [FFMMapper].
 ///
-///### 支持的返回值类型
+/// ### 支持的返回值类型
 /// - 1. 基本类型: `byte`, `short`, `int`, `long`, `float`, `double`, `boolean`, `char`.
 /// - 2. 内存段: [MemorySegment].
 ///
