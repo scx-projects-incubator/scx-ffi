@@ -234,7 +234,7 @@ final class FFMProxySupport {
     }
 
     /// 创建 FFMMethodHandle
-    public static MethodHandle createFFMMethodHandle(Method method,SymbolLookup symbolLookup) {
+    public static MethodHandle createFFMMethodHandle(Method method, SymbolLookup symbolLookup) {
         // 0, 获取方法名
         var symbolName = method.getAnnotation(SymbolName.class);
         var name = symbolName == null ? method.getName() : symbolName.value();
@@ -246,19 +246,22 @@ final class FFMProxySupport {
         }
 
         // 2, 创建方法的描述, 包括 返回值类型 参数类型列表
-        FunctionDescriptor functionDescriptor;
-
-        if (method.getReturnType() == void.class) {
-            var paramLayouts = getParameterMemoryLayouts(method.getParameterTypes());
-            functionDescriptor = FunctionDescriptor.ofVoid(paramLayouts);
-        } else {
-            var returnLayout = getReturnMemoryLayout(method.getReturnType());
-            var paramLayouts = getParameterMemoryLayouts(method.getParameterTypes());
-            functionDescriptor = FunctionDescriptor.of(returnLayout, paramLayouts);
-        }
+        var functionDescriptor = createFunctionDescriptor(method);
 
         // 3, 根据方法和描述, 获取可以调用本机方法的方法句柄
         return nativeLinker().downcallHandle(fun, functionDescriptor);
+    }
+
+    /// 生成方法描述
+    public static FunctionDescriptor createFunctionDescriptor(Method method) {
+        if (method.getReturnType() == void.class) {
+            var paramLayouts = getParameterMemoryLayouts(method.getParameterTypes());
+            return FunctionDescriptor.ofVoid(paramLayouts);
+        } else {
+            var returnLayout = getReturnMemoryLayout(method.getReturnType());
+            var paramLayouts = getParameterMemoryLayouts(method.getParameterTypes());
+            return FunctionDescriptor.of(returnLayout, paramLayouts);
+        }
     }
 
     public static Map<Method, MethodHandle> createFFMMethodHandles(Class<?> clazz, SymbolLookup symbolLookup) {
@@ -271,7 +274,7 @@ final class FFMProxySupport {
             for (var methodInfo : methodInfos) {
                 // 这里只 处理 abstract 方法.
                 if (methodInfo.isAbstract()) {
-                    result.put(methodInfo.rawMethod(), createFFMMethodHandle(methodInfo.rawMethod(),symbolLookup));
+                    result.put(methodInfo.rawMethod(), createFFMMethodHandle(methodInfo.rawMethod(), symbolLookup));
                 }
             }
             return result;
