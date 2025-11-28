@@ -50,8 +50,47 @@ final class FFICallbackSupport {
         throw new IllegalArgumentException(ffiCallback.getClass().getName() + " is not a ClassInfo");
     }
 
-    /// 因为 参数 和 返回值支持的类型是一样的 这里抽取出来
-    public static MemoryLayout getMemoryLayout(Class<?> type) {
+    /// 获取 Callback 参数的 内存布局
+    public static MemoryLayout getParameterMemoryLayout(Class<?> type, MemoryLayout targetLayout) {
+        // 1, 先处理可以直接映射的基本类型
+        if (type == byte.class) {
+            return JAVA_BYTE;
+        }
+        if (type == short.class) {
+            return JAVA_SHORT;
+        }
+        if (type == int.class) {
+            return JAVA_INT;
+        }
+        if (type == long.class) {
+            return JAVA_LONG;
+        }
+        if (type == float.class) {
+            return JAVA_FLOAT;
+        }
+        if (type == double.class) {
+            return JAVA_DOUBLE;
+        }
+        if (type == boolean.class) {
+            return JAVA_BOOLEAN;
+        }
+        if (type == char.class) {
+            return JAVA_CHAR;
+        }
+        // 2, 内存段
+        if (type == MemorySegment.class) {
+            if (targetLayout == null) {
+                return ADDRESS;
+            } else {
+                return ADDRESS.withTargetLayout(targetLayout);
+            }
+        }
+        // 其余全不支持 !!!
+        throw new IllegalArgumentException("不支持的 callback 参数类型 !!! " + type);
+    }
+
+    /// 获取 Callback 返回值的 内存布局
+    public static MemoryLayout getReturnMemoryLayout(Class<?> type) {
         // 1, 先处理可以直接映射的基本类型
         if (type == byte.class) {
             return JAVA_BYTE;
@@ -82,43 +121,27 @@ final class FFICallbackSupport {
             return ADDRESS;
         }
         // 其余全不支持 !!!
-        return null;
+        throw new IllegalArgumentException("不支持的 callback 返回值类型 !!! " + type);
     }
 
-    /// 获取 Callback 参数的 内存布局
-    public static MemoryLayout getParameterMemoryLayout(Class<?> type) {
-        var memoryLayout = getMemoryLayout(type);
-        if (memoryLayout == null) {
-            throw new IllegalArgumentException("不支持的 callback 参数类型 !!! " + type);
-        }
-        return memoryLayout;
-    }
-
-    /// 获取 Callback 返回值的 内存布局
-    public static MemoryLayout getReturnMemoryLayout(Class<?> type) {
-        var memoryLayout = getMemoryLayout(type);
-        if (memoryLayout == null) {
-            throw new IllegalArgumentException("不支持的 callback 返回值类型 !!! " + type);
-        }
-        return memoryLayout;
-    }
-
-    public static MemoryLayout[] getParameterMemoryLayouts(Class<?>[] types) {
+    public static MemoryLayout[] getParameterMemoryLayouts(Class<?>[] types, FFICallback ffiCallback) {
+        var targetLayouts = ffiCallback.parameterTargetLayouts();
         var memoryLayouts = new MemoryLayout[types.length];
         for (var i = 0; i < types.length; i = i + 1) {
-            memoryLayouts[i] = getParameterMemoryLayout(types[i]);
+            var targetLayout = targetLayouts != null && targetLayouts.length > i ? targetLayouts[i] : null;
+            memoryLayouts[i] = getParameterMemoryLayout(types[i], targetLayout);
         }
         return memoryLayouts;
     }
 
     /// 生成方法描述
-    public static FunctionDescriptor createFunctionDescriptor(Method method) {
+    public static FunctionDescriptor createFunctionDescriptor(Method method, FFICallback ffiCallback) {
         if (method.getReturnType() == void.class) {
-            var paramLayouts = getParameterMemoryLayouts(method.getParameterTypes());
+            var paramLayouts = getParameterMemoryLayouts(method.getParameterTypes(), ffiCallback);
             return FunctionDescriptor.ofVoid(paramLayouts);
         } else {
             var returnLayout = getReturnMemoryLayout(method.getReturnType());
-            var paramLayouts = getParameterMemoryLayouts(method.getParameterTypes());
+            var paramLayouts = getParameterMemoryLayouts(method.getParameterTypes(), ffiCallback);
             return FunctionDescriptor.of(returnLayout, paramLayouts);
         }
     }
