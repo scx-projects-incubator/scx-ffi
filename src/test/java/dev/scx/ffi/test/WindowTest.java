@@ -36,7 +36,7 @@ public class WindowTest {
         // 这里测试 A 函数
         int l = USER32.GetWindowTextLengthA(hWnd);
         var chars = new byte[l];
-        int l1 = USER32.GetWindowTextA(hWnd, chars, l );
+        int l1 = USER32.GetWindowTextA(hWnd, chars, l);
         return new String(chars, 0, l1);
     }
 
