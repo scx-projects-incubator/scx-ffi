@@ -1,15 +1,11 @@
 package dev.scx.ffi;
 
-import dev.scx.ffi.mapper.FFMMapper;
-
 import java.lang.foreign.Arena;
-import java.lang.foreign.MemorySegment;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import static dev.scx.ffi.FFMProxySupport.convertToNativeParameters;
-import static dev.scx.ffi.FFMProxySupport.convertToParameters;
+import static dev.scx.ffi.FFMProxySupport.*;
 
 /// BaseFFMProxy
 ///
@@ -35,23 +31,17 @@ abstract class BaseFFMProxy implements InvocationHandler {
 
         try (var arena = Arena.ofConfined()) {
 
-            // 1, 将 args 全部转换为只包含 (基本类型 | MemorySegment | FFMMapper) 三种类型的数组
-            var parameters = convertToParameters(args);
+            // 1, 将 args 转换为只包含 (基本类型 | MemorySegment | FFMMapper) 三种类型的数组
+            var wrappedParameters = wrapParameters(args);
 
-            // 2, 将 parameters 转换为只包含 (基本类型 | MemorySegment) 两种类型的数组
-            var nativeParameters = convertToNativeParameters(parameters, arena);
+            // 2, 将 wrappedParameters 转换为只包含 (基本类型 | MemorySegment) 两种类型的数组
+            var nativeParameters = prepareNativeParameters(wrappedParameters, arena);
 
             // 3, 执行方法
             var result = methodHandle.invokeWithArguments(nativeParameters);
 
             // 4, FFMMapper 类型的参数 进行 内存段 数据回写.
-            for (int i = 0; i < parameters.length; i = i + 1) {
-                var parameter = parameters[i];
-                var nativeParameter = nativeParameters[i];
-                if (parameter instanceof FFMMapper ffmMapper && nativeParameter instanceof MemorySegment memorySegment) {
-                    ffmMapper.fromMemorySegment(memorySegment);
-                }
-            }
+            writeBackParameters(wrappedParameters, nativeParameters);
 
             // 5, 返回结果
             return result;
