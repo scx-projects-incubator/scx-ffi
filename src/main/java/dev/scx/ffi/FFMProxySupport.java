@@ -28,7 +28,7 @@ final class FFMProxySupport {
 
     /// 获取 方法 返回值的 内存布局
     public static MemoryLayout getReturnMemoryLayout(Class<?> type) {
-        // 1, 先处理可以直接映射的基本类型
+        // 1, 基本类型
         if (type == byte.class) {
             return JAVA_BYTE;
         }
@@ -58,12 +58,12 @@ final class FFMProxySupport {
             return ADDRESS;
         }
         // 其余全不支持 !!!
-        throw new IllegalArgumentException("不支持的返回值类型 !!! " + type);
+        throw new IllegalArgumentException("不支持的返回值类型 : " + type);
     }
 
     /// 获取 方法 参数的 内存布局
     public static MemoryLayout getParameterMemoryLayout(Class<?> type) {
-        // 1, 先处理可以直接映射的基本类型
+        // 1, 基本类型
         if (type == byte.class) {
             return JAVA_BYTE;
         }
@@ -88,18 +88,11 @@ final class FFMProxySupport {
         if (type == char.class) {
             return JAVA_CHAR;
         }
-        // 2, 处理基本类型的数组类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.sequenceLayout() , 因为我们不知道数组长度
-        if (type == byte[].class ||
-            type == short[].class ||
-            type == int[].class ||
-            type == long[].class ||
-            type == float[].class ||
-            type == double[].class ||
-            type == boolean[].class ||
-            type == char[].class) {
+        // 2, 内存段
+        if (type == MemorySegment.class) {
             return ADDRESS;
         }
-        // 3, 内置 基本类型 Ref
+        // 3, 基本类型 引用
         if (type == ByteRef.class ||
             type == ShortRef.class ||
             type == IntRef.class ||
@@ -110,28 +103,35 @@ final class FFMProxySupport {
             type == CharRef.class) {
             return ADDRESS;
         }
-        // 4, 处理字符串
+        // 4, 字符串
         if (type == String.class || type == StringRef.class) {
             return ADDRESS;
         }
-        // 5, 内存段
-        if (type == MemorySegment.class) {
+        // 5, 基本类型数组 (这里我们使用 ADDRESS 而不是 MemoryLayout.sequenceLayout(), 因为只有在运行时才知道具体长度)
+        if (type == byte[].class ||
+            type == short[].class ||
+            type == int[].class ||
+            type == long[].class ||
+            type == float[].class ||
+            type == double[].class ||
+            type == boolean[].class ||
+            type == char[].class) {
             return ADDRESS;
         }
-        // 6, 处理 Callback 类型
-        if (FFICallback.class.isAssignableFrom(type)) {
-            return ADDRESS;
-        }
-        // 7, 处理 结构体类型 这里我们使用 ADDRESS 而不使用 MemoryLayout.structLayout(), 因为需要在运行时才知道具体结构
+        // 6, 结构体 (这里我们使用 ADDRESS 而不是 MemoryLayout.structLayout(), 因为只有在运行时才知道具体结构)
         if (FFIStruct.class.isAssignableFrom(type)) {
             return ADDRESS;
         }
-        // 8, 处理映射类型
+        // 7, 回调
+        if (FFICallback.class.isAssignableFrom(type)) {
+            return ADDRESS;
+        }
+        // 8, 自定义映射
         if (FFMMapper.class.isAssignableFrom(type)) {
             return ADDRESS;
         }
         // 其余全不支持 !!!
-        throw new IllegalArgumentException("不支持的参数类型 !!! " + type);
+        throw new IllegalArgumentException("不支持的参数类型 : " + type);
     }
 
     /// 获取 方法 参数的 内存布局
