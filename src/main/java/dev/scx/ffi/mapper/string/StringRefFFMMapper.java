@@ -6,6 +6,7 @@ import dev.scx.ffi.type.StringRef;
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
+// todo 这个类的可用性有问题
 /// StringRefFFMMapper
 ///
 /// @author scx567888
