@@ -1,8 +1,10 @@
 package dev.scx.ffi.test;
 
 import dev.scx.ffi.test.platform.win32.WinUser;
+import dev.scx.ffi.type.EncodedString;
 
 import static dev.scx.ffi.test.platform.win32.User32.USER32;
+import static java.nio.charset.StandardCharsets.UTF_16LE;
 
 public class User32Test {
 
@@ -12,7 +14,8 @@ public class User32Test {
     }
 
     public static void test1() {
-        USER32.MessageBoxA(null, "测试中文内容", "😀😁😂测试标题", 0);
+        USER32.MessageBoxA(null, "MessageBoxA 测试中文内容", "😀😁😂测试标题", 0);
+        USER32.MessageBoxW(null, new EncodedString("MessageBoxW 测试中文内容", UTF_16LE), new EncodedString("😀😁😂测试标题", UTF_16LE), 0);
     }
 
     public static void test2() {

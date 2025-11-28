@@ -24,7 +24,7 @@ public class Kernel32Test {
 
         var b = KERNEL32.GetConsoleMode(a, i);
 
-        var c = KERNEL32.SetConsoleMode(a, i.getValue());
+        var c = KERNEL32.SetConsoleMode(a, i.value());
     }
 
 }
