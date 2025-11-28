@@ -35,8 +35,8 @@ public class WindowTest {
     public static String getWindowTitle(MemorySegment hWnd) {
         // 这里测试 A 函数
         int l = USER32.GetWindowTextLengthA(hWnd);
-        var chars = new byte[l];
-        int l1 = USER32.GetWindowTextA(hWnd, chars, l);
+        var chars = new byte[l + 1];
+        int l1 = USER32.GetWindowTextA(hWnd, chars, chars.length);
         return new String(chars, 0, l1);
     }
 
