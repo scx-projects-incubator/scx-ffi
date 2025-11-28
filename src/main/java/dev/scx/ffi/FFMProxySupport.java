@@ -202,7 +202,7 @@ final class FFMProxySupport {
     }
 
     /// 转换成 (基本类型 | MemorySegment) 两种
-    public static Object[] convertToNativeParameters(Object[] parameters, Arena arena) throws IllegalAccessException {
+    public static Object[] convertToNativeParameters(Object[] parameters, Arena arena) {
         var nativeParameters = new Object[parameters.length];
         for (var i = 0; i < parameters.length; i = i + 1) {
             var parameter = parameters[i];
