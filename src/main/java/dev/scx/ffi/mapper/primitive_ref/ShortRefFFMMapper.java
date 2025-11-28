@@ -18,12 +18,12 @@ public record ShortRefFFMMapper(ShortRef shortRef) implements FFMMapper {
 
     @Override
     public MemorySegment toMemorySegment(Arena arena) {
-        return arena.allocateFrom(JAVA_SHORT, shortRef.getValue());
+        return arena.allocateFrom(JAVA_SHORT, shortRef.value());
     }
 
     @Override
     public void fromMemorySegment(MemorySegment memorySegment) {
-        shortRef.setValue(memorySegment.get(JAVA_SHORT, 0));
+        shortRef.value(memorySegment.get(JAVA_SHORT, 0));
     }
 
 }

@@ -16,11 +16,11 @@ public final class BooleanRef {
         this.value = value;
     }
 
-    public boolean getValue() {
+    public boolean value() {
         return value;
     }
 
-    public void setValue(boolean value) {
+    public void value(boolean value) {
         this.value = value;
     }
 

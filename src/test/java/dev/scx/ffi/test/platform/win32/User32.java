@@ -3,6 +3,7 @@ package dev.scx.ffi.test.platform.win32;
 import dev.scx.ffi.ScxFFI;
 import dev.scx.ffi.test.platform.win32.WinUser.POINT;
 import dev.scx.ffi.test.platform.win32.WinUser.WNDENUMPROC;
+import dev.scx.ffi.type.EncodedString;
 
 import java.lang.foreign.MemorySegment;
 
@@ -17,6 +18,8 @@ public interface User32 {
     // https://learn.microsoft.com/zh-cn/windows/win32/api/winuser/nf-winuser-messageboxa
     int MessageBoxA(MemorySegment hWnd, String lpText, String lpCaption, int uType);
 
+    int MessageBoxW(MemorySegment hWnd, EncodedString lpText, EncodedString lpCaption, int uType);
+
     // https://learn.microsoft.com/zh-cn/windows/win32/api/winuser/nf-winuser-iswindowvisible
     boolean IsWindowVisible(MemorySegment hWnd);
 
@@ -24,9 +27,15 @@ public interface User32 {
 
     int GetWindowTextLengthW(MemorySegment hWnd);
 
+    int GetWindowTextLengthA(MemorySegment hWnd);
+
     int GetClassNameW(MemorySegment hWnd, char[] lpClassName, int nMaxCount);
 
+    int GetClassNameA(MemorySegment hWnd, byte[] lpClassName, int nMaxCount);
+
     int GetWindowTextW(MemorySegment hWnd, char[] lpString, int nMaxCount);
+
+    int GetWindowTextA(MemorySegment hWnd, byte[] lpString, int nMaxCount);
 
     MemorySegment GetWindowThreadProcessId(MemorySegment hWnd, MemorySegment lpdwProcessId);
 

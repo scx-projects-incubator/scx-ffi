@@ -19,7 +19,7 @@ import static java.lang.foreign.SymbolLookup.libraryLookup;
 /// - 1. 基本类型: `byte`, `short`, `int`, `long`, `float`, `double`, `boolean`, `char`.
 /// - 2. 内存段: [MemorySegment].
 /// - 3. 基本类型引用: [ByteRef], [ShortRef], [IntRef], [LongRef], [FloatRef], [DoubleRef], [BooleanRef], [CharRef].
-/// - 4. 字符串: [String], [StringRef].
+/// - 4. 字符串: [String], [EncodedString].
 /// - 5. 基本类型数组: `byte[]`, `short[]`, `int[]`, `long[]`, `float[]`, `double[]`, `boolean[]`, `char[]`.
 /// - 6. 结构体: [FFIStruct].
 /// - 7. 回调: [FFICallback].

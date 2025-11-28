@@ -16,11 +16,11 @@ public final class ByteRef {
         this.value = value;
     }
 
-    public byte getValue() {
+    public byte value() {
         return value;
     }
 
-    public void setValue(byte value) {
+    public void value(byte value) {
         this.value = value;
     }
 

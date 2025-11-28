@@ -16,11 +16,11 @@ public final class DoubleRef {
         this.value = value;
     }
 
-    public double getValue() {
+    public double value() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void value(double value) {
         this.value = value;
     }
 

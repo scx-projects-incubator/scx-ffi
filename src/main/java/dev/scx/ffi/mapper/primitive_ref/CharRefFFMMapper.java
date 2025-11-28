@@ -18,12 +18,12 @@ public record CharRefFFMMapper(CharRef charRef) implements FFMMapper {
 
     @Override
     public MemorySegment toMemorySegment(Arena arena) {
-        return arena.allocateFrom(JAVA_CHAR, charRef.getValue());
+        return arena.allocateFrom(JAVA_CHAR, charRef.value());
     }
 
     @Override
     public void fromMemorySegment(MemorySegment memorySegment) {
-        charRef.setValue(memorySegment.get(JAVA_CHAR, 0));
+        charRef.value(memorySegment.get(JAVA_CHAR, 0));
     }
 
 }

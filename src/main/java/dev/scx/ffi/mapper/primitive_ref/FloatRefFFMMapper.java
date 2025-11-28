@@ -18,12 +18,12 @@ public record FloatRefFFMMapper(FloatRef floatRef) implements FFMMapper {
 
     @Override
     public MemorySegment toMemorySegment(Arena arena) {
-        return arena.allocateFrom(JAVA_FLOAT, floatRef.getValue());
+        return arena.allocateFrom(JAVA_FLOAT, floatRef.value());
     }
 
     @Override
     public void fromMemorySegment(MemorySegment memorySegment) {
-        floatRef.setValue(memorySegment.get(JAVA_FLOAT, 0));
+        floatRef.value(memorySegment.get(JAVA_FLOAT, 0));
     }
 
 }
