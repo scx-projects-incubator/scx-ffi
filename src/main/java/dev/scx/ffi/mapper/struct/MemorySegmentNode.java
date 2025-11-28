@@ -7,13 +7,7 @@ import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
 
-final class MemorySegmentNode implements Node {
-
-    private final FieldInfo fieldInfo;
-
-    public MemorySegmentNode(FieldInfo fieldInfo) {
-        this.fieldInfo = fieldInfo;
-    }
+record MemorySegmentNode(FieldInfo fieldInfo) implements Node {
 
     @Override
     public MemoryLayout createMemoryLayout() {
@@ -22,11 +16,6 @@ final class MemorySegmentNode implements Node {
             memoryLayout = memoryLayout.withName(fieldInfo.name());
         }
         return memoryLayout;
-    }
-
-    @Override
-    public FieldInfo fieldInfo() {
-        return fieldInfo;
     }
 
     @Override
