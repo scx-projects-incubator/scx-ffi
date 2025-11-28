@@ -8,6 +8,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+import static dev.scx.ffi.FFMProxySupport.convertToNativeParameters;
 import static dev.scx.ffi.FFMProxySupport.convertToParameters;
 
 /// BaseFFMProxy
@@ -37,22 +38,13 @@ abstract class BaseFFMProxy implements InvocationHandler {
             // 1, 将 args 全部转换为只包含 (基本类型 | MemorySegment | FFMMapper) 三种类型的数组
             var parameters = convertToParameters(args);
 
-            // 2, 将 parameters 转换为只包含 (基本类型 | MemorySegment) 两种类型的 nativeParameters 数组
-            var nativeParameters = new Object[args.length];
-            for (var i = 0; i < parameters.length; i = i + 1) {
-                var parameter = parameters[i];
-                if (parameter instanceof FFMMapper ffmMapper) {
-                    nativeParameters[i] = ffmMapper.toMemorySegment(arena);
-                } else {
-                    //这里只剩下 基本类型 | MemorySegment, 能够直接使用.
-                    nativeParameters[i] = parameter;
-                }
-            }
+            // 2, 将 parameters 转换为只包含 (基本类型 | MemorySegment) 两种类型的数组
+            var nativeParameters = convertToNativeParameters(parameters, arena);
 
             // 3, 执行方法
             var result = methodHandle.invokeWithArguments(nativeParameters);
 
-            // 4, FFMMapper 类型的参数 进行内存数据回写.
+            // 4, FFMMapper 类型的参数 进行 内存段 数据回写.
             for (int i = 0; i < parameters.length; i = i + 1) {
                 var parameter = parameters[i];
                 var nativeParameter = nativeParameters[i];
@@ -63,7 +55,6 @@ abstract class BaseFFMProxy implements InvocationHandler {
 
             // 5, 返回结果
             return result;
-
         }
 
     }

@@ -1,7 +1,7 @@
 package dev.scx.ffi;
 
 import dev.scx.ffi.annotation.SymbolName;
-import dev.scx.ffi.mapper.*;
+import dev.scx.ffi.mapper.FFMMapper;
 import dev.scx.ffi.mapper.callback.FFICallbackFFMMapper;
 import dev.scx.ffi.mapper.primitive_array.*;
 import dev.scx.ffi.mapper.primitive_ref.*;
@@ -10,10 +10,7 @@ import dev.scx.ffi.mapper.string.StringRefFFMMapper;
 import dev.scx.ffi.mapper.struct.FFIStructFFMMapper;
 import dev.scx.ffi.type.*;
 
-import java.lang.foreign.FunctionDescriptor;
-import java.lang.foreign.MemoryLayout;
-import java.lang.foreign.MemorySegment;
-import java.lang.foreign.SymbolLookup;
+import java.lang.foreign.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 
@@ -202,6 +199,21 @@ final class FFMProxySupport {
             parameters[i] = convertToParameter(objs[i]);
         }
         return parameters;
+    }
+
+    /// 转换成 (基本类型 | MemorySegment) 两种
+    public static Object[] convertToNativeParameters(Object[] parameters, Arena arena) throws IllegalAccessException {
+        var nativeParameters = new Object[parameters.length];
+        for (var i = 0; i < parameters.length; i = i + 1) {
+            var parameter = parameters[i];
+            if (parameter instanceof FFMMapper ffmMapper) {
+                nativeParameters[i] = ffmMapper.toMemorySegment(arena);
+            } else {
+                //这里只剩下 基本类型 | MemorySegment, 能够直接使用.
+                nativeParameters[i] = parameter;
+            }
+        }
+        return nativeParameters;
     }
 
     /// 创建 FFMMethodHandle
