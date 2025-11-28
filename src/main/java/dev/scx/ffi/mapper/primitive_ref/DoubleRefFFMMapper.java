@@ -18,12 +18,12 @@ public record DoubleRefFFMMapper(DoubleRef doubleRef) implements FFMMapper {
 
     @Override
     public MemorySegment toMemorySegment(Arena arena) {
-        return arena.allocateFrom(JAVA_DOUBLE, doubleRef.getValue());
+        return arena.allocateFrom(JAVA_DOUBLE, doubleRef.value());
     }
 
     @Override
     public void fromMemorySegment(MemorySegment memorySegment) {
-        doubleRef.setValue(memorySegment.get(JAVA_DOUBLE, 0));
+        doubleRef.value(memorySegment.get(JAVA_DOUBLE, 0));
     }
 
 }

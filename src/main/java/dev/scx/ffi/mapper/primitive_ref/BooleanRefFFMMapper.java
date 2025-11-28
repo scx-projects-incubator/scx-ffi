@@ -21,12 +21,12 @@ public record BooleanRefFFMMapper(BooleanRef booleanRef) implements FFMMapper {
 
     @Override
     public MemorySegment toMemorySegment(Arena arena) {
-        return arena.allocateFrom(JAVA_BYTE, (byte) (booleanRef.getValue() ? 1 : 0));
+        return arena.allocateFrom(JAVA_BYTE, (byte) (booleanRef.value() ? 1 : 0));
     }
 
     @Override
     public void fromMemorySegment(MemorySegment memorySegment) {
-        booleanRef.setValue(memorySegment.get(JAVA_BOOLEAN, 0));
+        booleanRef.value(memorySegment.get(JAVA_BOOLEAN, 0));
     }
 
 }

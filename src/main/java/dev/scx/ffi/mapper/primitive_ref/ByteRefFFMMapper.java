@@ -18,12 +18,12 @@ public record ByteRefFFMMapper(ByteRef byteRef) implements FFMMapper {
 
     @Override
     public MemorySegment toMemorySegment(Arena arena) {
-        return arena.allocateFrom(JAVA_BYTE, byteRef.getValue());
+        return arena.allocateFrom(JAVA_BYTE, byteRef.value());
     }
 
     @Override
     public void fromMemorySegment(MemorySegment memorySegment) {
-        byteRef.setValue(memorySegment.get(JAVA_BYTE, 0));
+        byteRef.value(memorySegment.get(JAVA_BYTE, 0));
     }
 
 }

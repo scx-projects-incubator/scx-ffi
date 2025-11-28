@@ -18,12 +18,12 @@ public record IntRefFFMMapper(IntRef intRef) implements FFMMapper {
 
     @Override
     public MemorySegment toMemorySegment(Arena arena) {
-        return arena.allocateFrom(JAVA_INT, intRef.getValue());
+        return arena.allocateFrom(JAVA_INT, intRef.value());
     }
 
     @Override
     public void fromMemorySegment(MemorySegment memorySegment) {
-        intRef.setValue(memorySegment.get(JAVA_INT, 0));
+        intRef.value(memorySegment.get(JAVA_INT, 0));
     }
 
 }

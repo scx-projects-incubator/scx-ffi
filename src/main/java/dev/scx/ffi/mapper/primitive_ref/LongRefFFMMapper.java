@@ -18,12 +18,12 @@ public record LongRefFFMMapper(LongRef longRef) implements FFMMapper {
 
     @Override
     public MemorySegment toMemorySegment(Arena arena) {
-        return arena.allocateFrom(JAVA_LONG, longRef.getValue());
+        return arena.allocateFrom(JAVA_LONG, longRef.value());
     }
 
     @Override
     public void fromMemorySegment(MemorySegment memorySegment) {
-        longRef.setValue(memorySegment.get(JAVA_LONG, 0));
+        longRef.value(memorySegment.get(JAVA_LONG, 0));
     }
 
 }
