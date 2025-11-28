@@ -201,6 +201,7 @@ final class FFMProxySupport {
         return parameters;
     }
 
+    /// 这里因为是内部调用 我们假定 parameters 一定是 convertToParameters 的返回值.
     /// 转换成 (基本类型 | MemorySegment) 两种
     public static Object[] convertToNativeParameters(Object[] parameters, Arena arena) {
         var nativeParameters = new Object[parameters.length];
