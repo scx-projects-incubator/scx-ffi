@@ -6,34 +6,19 @@ import dev.scx.reflect.FieldInfo;
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
 
-final class StructNode implements Node {
-
-    private final FieldInfo fieldInfo;
-    private final Node[] fieldNodes;
-    private final ClassInfo classInfo;
-
-    public StructNode(FieldInfo fieldInfo, Node[] fieldNodes, ClassInfo classInfo) {
-        this.fieldInfo = fieldInfo;
-        this.fieldNodes = fieldNodes;
-        this.classInfo = classInfo;
-    }
+record StructNode(FieldInfo fieldInfo, Node[] fieldNodes, ClassInfo classInfo) implements Node {
 
     @Override
     public MemoryLayout createMemoryLayout() {
-        var arr = new MemoryLayout[fieldNodes.length];
+        var fieldMemoryLayouts = new MemoryLayout[fieldNodes.length];
         for (int i = 0; i < fieldNodes.length; i = i + 1) {
-            arr[i] = fieldNodes[i].createMemoryLayout();
+            fieldMemoryLayouts[i] = fieldNodes[i].createMemoryLayout();
         }
-        var memoryLayout = MemoryLayout.structLayout(arr);
+        var memoryLayout = MemoryLayout.structLayout(fieldMemoryLayouts);
         if (fieldInfo != null) {
             memoryLayout = memoryLayout.withName(fieldInfo.name());
         }
         return memoryLayout;
-    }
-
-    @Override
-    public FieldInfo fieldInfo() {
-        return fieldInfo;
     }
 
     @Override
