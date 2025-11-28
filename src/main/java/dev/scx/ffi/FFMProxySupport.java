@@ -105,7 +105,7 @@ final class FFMProxySupport {
             return ADDRESS;
         }
         // 4, 字符串
-        if (type == String.class || type == StringRef.class) {
+        if (type == String.class || type == EncodedString.class) {
             return ADDRESS;
         }
         // 5, 基本类型数组 (这里我们使用 ADDRESS 而不是 MemoryLayout.sequenceLayout(), 因为只有在运行时才知道具体长度)
@@ -169,7 +169,7 @@ final class FFMProxySupport {
             case CharRef r -> new CharRefFFMMapper(r);
             // 4, 字符串
             case String s -> new StringFFMMapper(s);
-            case StringRef r -> new StringRefFFMMapper(r);
+            case EncodedString r -> new StringRefFFMMapper(r);
             // 5, 基本类型数组
             case byte[] c -> new ByteArrayFFMMapper(c);
             case short[] c -> new ShortArrayFFMMapper(c);
