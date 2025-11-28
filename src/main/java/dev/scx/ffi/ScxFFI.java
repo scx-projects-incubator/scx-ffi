@@ -17,10 +17,10 @@ import static java.lang.foreign.SymbolLookup.libraryLookup;
 ///
 /// ### 支持的参数类型
 /// - 1. 基本类型: `byte`, `short`, `int`, `long`, `float`, `double`, `boolean`, `char`.
-/// - 2. 基本类型数组: `byte[]`, `short[]`, `int[]`, `long[]`, `float[]`, `double[]`, `boolean[]`, `char[]`.
-/// - 3. 基本类型引用: [ByteRef], [ShortRef], [IntRef], [LongRef], [FloatRef], [DoubleRef], [BooleanRef], [CharRef].
-/// - 4. 字符串: [String], [StringRef].
-/// - 5. 内存段: [MemorySegment].
+/// - 2. 内存段: [MemorySegment].
+/// - 3. 基本类型数组: `byte[]`, `short[]`, `int[]`, `long[]`, `float[]`, `double[]`, `boolean[]`, `char[]`.
+/// - 4. 基本类型引用: [ByteRef], [ShortRef], [IntRef], [LongRef], [FloatRef], [DoubleRef], [BooleanRef], [CharRef].
+/// - 5. 字符串: [String], [StringRef].
 /// - 6. 回调: [FFICallback].
 /// - 7. 结构体: [FFIStruct].
 /// - 8. 自定义映射: [FFMMapper].
