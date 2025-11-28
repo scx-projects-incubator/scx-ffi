@@ -1,17 +1,13 @@
 package dev.scx.ffi;
 
-import dev.scx.reflect.ClassInfo;
-import dev.scx.reflect.ScxReflect;
-
 import java.lang.foreign.Arena;
 import java.lang.foreign.SymbolLookup;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.Map;
 
 import static dev.scx.ffi.FFMProxySupport.*;
-import static dev.scx.ffi.FFMProxySupport.writeBackParameters;
 
 /// FFMProxy
 ///
@@ -19,17 +15,15 @@ import static dev.scx.ffi.FFMProxySupport.writeBackParameters;
 /// @version 0.0.1
 final class FFMProxy implements InvocationHandler {
 
-    private final SymbolLookup symbolLookup;
-    /// 这里只有读操作 所以 HashMap 即可保证线程安全.
-    private final HashMap<Method, MethodHandle> ffmMethodHandleCache;
+    /// 这里只有读操作 所以 Map 即可保证线程安全.
+    private final Map<Method, MethodHandle> ffmMethodHandles;
 
     public <T> FFMProxy(Class<T> clazz, SymbolLookup symbolLookup) {
-        this.symbolLookup = symbolLookup;
-        this.ffmMethodHandleCache = initFFMMethodHandleCache(clazz);
+        this.ffmMethodHandles = createFFMMethodHandles(clazz, symbolLookup);
     }
 
     @Override
-    public final Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
         // Object 方法 直接调用
         if (method.getDeclaringClass() == Object.class) {
@@ -65,31 +59,8 @@ final class FFMProxy implements InvocationHandler {
     }
 
     /// 获取 FFMMethodHandle
-    protected abstract MethodHandle findFFMMethodHandle(Method method);
-
-    private HashMap<Method, MethodHandle> initFFMMethodHandleCache(Class<?> clazz) {
-        var typeInfo = ScxReflect.typeOf(clazz);
-
-        if (typeInfo instanceof ClassInfo classInfo) {
-            var cache = new HashMap<Method, MethodHandle>();
-            // 获取接口整个层级的所有方法
-            var methodInfos = classInfo.allMethods();
-            for (var methodInfo : methodInfos) {
-                // 这里只 处理 abstract 方法.
-                if (methodInfo.isAbstract()) {
-                    cache.put(methodInfo.rawMethod(), createFFMMethodHandle(symbolLookup, methodInfo.rawMethod()));
-                }
-            }
-            return cache;
-        }
-
-        // 这种情况几乎不可能发生, 此处仅作防御处理.
-        throw new IllegalArgumentException(clazz.getName() + " is not a ClassInfo");
-    }
-
-    @Override
-    protected MethodHandle findFFMMethodHandle(Method method) {
-        return this.ffmMethodHandleCache.get(method);
+    private MethodHandle findFFMMethodHandle(Method method) {
+        return this.ffmMethodHandles.get(method);
     }
 
 }

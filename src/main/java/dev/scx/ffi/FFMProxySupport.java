@@ -9,10 +9,14 @@ import dev.scx.ffi.mapper.string.StringFFMMapper;
 import dev.scx.ffi.mapper.string.StringRefFFMMapper;
 import dev.scx.ffi.mapper.struct.FFIStructFFMMapper;
 import dev.scx.ffi.type.*;
+import dev.scx.reflect.ClassInfo;
+import dev.scx.reflect.ScxReflect;
 
 import java.lang.foreign.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.foreign.Linker.nativeLinker;
 import static java.lang.foreign.ValueLayout.*;
@@ -230,7 +234,7 @@ final class FFMProxySupport {
     }
 
     /// 创建 FFMMethodHandle
-    public static MethodHandle createFFMMethodHandle(SymbolLookup symbolLookup, Method method) {
+    public static MethodHandle createFFMMethodHandle(Method method,SymbolLookup symbolLookup) {
         // 0, 获取方法名
         var symbolName = method.getAnnotation(SymbolName.class);
         var name = symbolName == null ? method.getName() : symbolName.value();
@@ -255,6 +259,26 @@ final class FFMProxySupport {
 
         // 3, 根据方法和描述, 获取可以调用本机方法的方法句柄
         return nativeLinker().downcallHandle(fun, functionDescriptor);
+    }
+
+    public static Map<Method, MethodHandle> createFFMMethodHandles(Class<?> clazz, SymbolLookup symbolLookup) {
+        var typeInfo = ScxReflect.typeOf(clazz);
+
+        if (typeInfo instanceof ClassInfo classInfo) {
+            var result = new HashMap<Method, MethodHandle>();
+            // 获取接口整个层级的所有方法
+            var methodInfos = classInfo.allMethods();
+            for (var methodInfo : methodInfos) {
+                // 这里只 处理 abstract 方法.
+                if (methodInfo.isAbstract()) {
+                    result.put(methodInfo.rawMethod(), createFFMMethodHandle(methodInfo.rawMethod(),symbolLookup));
+                }
+            }
+            return result;
+        }
+
+        // 这种情况几乎不可能发生, 此处仅作防御处理.
+        throw new IllegalArgumentException(clazz.getName() + " is not a ClassInfo");
     }
 
 }
