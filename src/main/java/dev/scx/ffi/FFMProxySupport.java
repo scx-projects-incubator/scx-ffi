@@ -207,7 +207,7 @@ final class FFMProxySupport {
 
     /// 这里因为是内部调用 我们假定 wrappedParameters 一定是 wrapParameters 的返回值.
     /// 转换成 (基本类型 | MemorySegment) 两种
-    public static Object[] prepareNativeParameters(Object[] wrappedParameters, Arena arena) {
+    public static Object[] prepareNativeParameters(Object[] wrappedParameters, Arena arena) throws Exception {
         var nativeParameters = new Object[wrappedParameters.length];
         for (var i = 0; i < wrappedParameters.length; i = i + 1) {
             var wrappedParameter = wrappedParameters[i];
@@ -222,7 +222,7 @@ final class FFMProxySupport {
     }
 
     /// 回写参数
-    public static void writeBackParameters(Object[] wrappedParameters, Object[] nativeParameters) {
+    public static void writeBackParameters(Object[] wrappedParameters, Object[] nativeParameters) throws Exception {
         for (int i = 0; i < wrappedParameters.length; i = i + 1) {
             var wrappedParameter = wrappedParameters[i];
             var nativeParameter = nativeParameters[i];
