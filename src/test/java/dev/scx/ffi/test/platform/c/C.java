@@ -37,7 +37,7 @@ public interface C extends C1 {
 
         int callback(MemorySegment aAddr, MemorySegment bAddr);
 
-        /// 指定内存布局
+        /// 指定参数内存布局
         @Override
         default MemoryLayout[] parameterTargetLayouts() {
             return new MemoryLayout[]{JAVA_INT, JAVA_INT};
