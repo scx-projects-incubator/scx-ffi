@@ -9,7 +9,7 @@ import java.lang.foreign.MemorySegment;
 import static java.lang.foreign.ValueLayout.JAVA_BOOLEAN;
 import static java.lang.foreign.ValueLayout.JAVA_BYTE;
 
-// todo 这个类有必要存在吗? 写法正确吗?
+// todo 这个类有必要存在吗? 写法正确吗? 待验证
 /// BooleanRefFFMMapper
 ///
 /// 不建议直接使用, 推荐直接使用 [BooleanRef]

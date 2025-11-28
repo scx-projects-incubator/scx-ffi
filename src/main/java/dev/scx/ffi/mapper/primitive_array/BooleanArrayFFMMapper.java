@@ -5,7 +5,7 @@ import dev.scx.ffi.mapper.FFMMapper;
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
-// todo 这个怎么实现?
+// todo 这个怎么实现? 待处理
 /// BooleanArrayFFMMapper
 ///
 /// 不建议直接使用, 推荐直接使用 `boolean[]`
