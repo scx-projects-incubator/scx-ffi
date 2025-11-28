@@ -135,7 +135,7 @@ final class FFMProxySupport {
     }
 
     /// 获取 方法 参数的 内存布局
-    public static MemoryLayout[] getParameterMemoryLayouts(Class<?>[] types) {
+    public static MemoryLayout[] getParameterMemoryLayouts(Class<?>... types) {
         var memoryLayouts = new MemoryLayout[types.length];
         for (var i = 0; i < types.length; i = i + 1) {
             memoryLayouts[i] = getParameterMemoryLayout(types[i]);
