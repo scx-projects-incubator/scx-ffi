@@ -36,7 +36,7 @@ final class FFMProxy implements InvocationHandler {
         }
 
         // 处理 FFM 的方法调用
-        var methodHandle = this.findFFMMethodHandle(method);
+        var methodHandle = this.ffmMethodHandles.get(method);
 
         try (var arena = Arena.ofConfined()) {
 
@@ -56,11 +56,6 @@ final class FFMProxy implements InvocationHandler {
             return result;
         }
 
-    }
-
-    /// 获取 FFMMethodHandle
-    private MethodHandle findFFMMethodHandle(Method method) {
-        return this.ffmMethodHandles.get(method);
     }
 
 }
