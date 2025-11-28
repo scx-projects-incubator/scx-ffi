@@ -17,7 +17,7 @@ final class MemorySegmentNode implements Node {
 
     @Override
     public MemoryLayout createMemoryLayout() {
-        MemoryLayout memoryLayout = ADDRESS;
+        var memoryLayout = ADDRESS;
         if (fieldInfo != null) {
             memoryLayout = memoryLayout.withName(fieldInfo.name());
         }
@@ -30,14 +30,16 @@ final class MemorySegmentNode implements Node {
     }
 
     @Override
-    public long writeToMemorySegment(MemorySegment memorySegment, long offset, Object value) {
-        memorySegment.set(ADDRESS, offset, (MemorySegment) value);
+    public long writeToMemorySegment(MemorySegment memorySegment, long offset, Object targetObject) throws IllegalAccessException {
+        var value = fieldInfo.get(targetObject);
+        ADDRESS.varHandle().set(memorySegment, offset, value);
         return ADDRESS.byteSize();
     }
 
     @Override
     public long readFromMemorySegment(MemorySegment memorySegment, long offset, Object targetObject) throws IllegalAccessException {
-        fieldInfo.set(targetObject, memorySegment.get(ADDRESS, offset));
+        var value = ADDRESS.varHandle().get(memorySegment, offset);
+        fieldInfo.set(targetObject, value);
         return ADDRESS.byteSize();
     }
 
