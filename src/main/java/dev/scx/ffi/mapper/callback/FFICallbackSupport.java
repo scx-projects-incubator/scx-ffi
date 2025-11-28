@@ -36,7 +36,7 @@ final class FFICallbackSupport {
                 throw new IllegalArgumentException("Not found any FFICallback method, name : " + callbackMethodName);
             }
             if (list.size() > 1) {
-                throw new IllegalArgumentException("found more than one FFICallback method, name : " + callbackMethodName);
+                throw new IllegalArgumentException("Found more than one FFICallback method, name : " + callbackMethodName);
             }
 
             var callbackMethod = list.get(0);
@@ -50,8 +50,8 @@ final class FFICallbackSupport {
         throw new IllegalArgumentException(ffiCallback.getClass().getName() + " is not a ClassInfo");
     }
 
-    /// 获取 Callback 参数的 内存布局 (规则和 getReturnMemoryLayout 是一致的)
-    public static MemoryLayout getParameterMemoryLayout(Class<?> type) {
+    /// 获取 Callback 参数的 内存布局
+    public static MemoryLayout getParameterMemoryLayout(Class<?> type, MemoryLayout targetLayout) {
         // 1, 先处理可以直接映射的基本类型
         if (type == byte.class) {
             return JAVA_BYTE;
@@ -79,13 +79,17 @@ final class FFICallbackSupport {
         }
         // 2, 内存段
         if (type == MemorySegment.class) {
-            return ADDRESS;
+            if (targetLayout == null) {
+                return ADDRESS;
+            } else {
+                return ADDRESS.withTargetLayout(targetLayout);
+            }
         }
         // 其余全不支持 !!!
         throw new IllegalArgumentException("不支持的 callback 参数类型 !!! " + type);
     }
 
-    /// 获取 Callback 返回值参数的 内存布局 (规则和 getParameterMemoryLayout 是一致的)
+    /// 获取 Callback 返回值的 内存布局
     public static MemoryLayout getReturnMemoryLayout(Class<?> type) {
         // 1, 先处理可以直接映射的基本类型
         if (type == byte.class) {
@@ -120,22 +124,24 @@ final class FFICallbackSupport {
         throw new IllegalArgumentException("不支持的 callback 返回值类型 !!! " + type);
     }
 
-    public static MemoryLayout[] getParameterMemoryLayouts(Class<?>[] types) {
+    public static MemoryLayout[] getParameterMemoryLayouts(Class<?>[] types, FFICallback ffiCallback) {
+        var targetLayouts = ffiCallback.parameterTargetLayouts();
         var memoryLayouts = new MemoryLayout[types.length];
         for (var i = 0; i < types.length; i = i + 1) {
-            memoryLayouts[i] = getParameterMemoryLayout(types[i]);
+            var targetLayout = targetLayouts != null && targetLayouts.length > i ? targetLayouts[i] : null;
+            memoryLayouts[i] = getParameterMemoryLayout(types[i], targetLayout);
         }
         return memoryLayouts;
     }
 
     /// 生成方法描述
-    public static FunctionDescriptor createFunctionDescriptor(Method callbackMethod) {
-        if (callbackMethod.getReturnType() == void.class) {
-            var paramLayouts = getParameterMemoryLayouts(callbackMethod.getParameterTypes());
+    public static FunctionDescriptor createFunctionDescriptor(Method method, FFICallback ffiCallback) {
+        if (method.getReturnType() == void.class) {
+            var paramLayouts = getParameterMemoryLayouts(method.getParameterTypes(), ffiCallback);
             return FunctionDescriptor.ofVoid(paramLayouts);
         } else {
-            var returnLayout = getReturnMemoryLayout(callbackMethod.getReturnType());
-            var paramLayouts = getParameterMemoryLayouts(callbackMethod.getParameterTypes());
+            var returnLayout = getReturnMemoryLayout(method.getReturnType());
+            var paramLayouts = getParameterMemoryLayouts(method.getParameterTypes(), ffiCallback);
             return FunctionDescriptor.of(returnLayout, paramLayouts);
         }
     }

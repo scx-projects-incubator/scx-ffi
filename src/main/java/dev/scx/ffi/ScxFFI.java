@@ -17,15 +17,15 @@ import static java.lang.foreign.SymbolLookup.libraryLookup;
 ///
 /// ### 支持的参数类型
 /// - 1. 基本类型: `byte`, `short`, `int`, `long`, `float`, `double`, `boolean`, `char`.
-/// - 2. 基本类型数组: `byte[]`, `short[]`, `int[]`, `long[]`, `float[]`, `double[]`, `boolean[]`, `char[]`.
+/// - 2. 内存段: [MemorySegment].
 /// - 3. 基本类型引用: [ByteRef], [ShortRef], [IntRef], [LongRef], [FloatRef], [DoubleRef], [BooleanRef], [CharRef].
 /// - 4. 字符串: [String], [StringRef].
-/// - 5. 内存段: [MemorySegment].
-/// - 6. 回调: [FFICallback].
-/// - 7. 结构体: [FFIStruct].
+/// - 5. 基本类型数组: `byte[]`, `short[]`, `int[]`, `long[]`, `float[]`, `double[]`, `boolean[]`, `char[]`.
+/// - 6. 结构体: [FFIStruct].
+/// - 7. 回调: [FFICallback].
 /// - 8. 自定义映射: [FFMMapper].
 ///
-///### 支持的返回值类型
+/// ### 支持的返回值类型
 /// - 1. 基本类型: `byte`, `short`, `int`, `long`, `float`, `double`, `boolean`, `char`.
 /// - 2. 内存段: [MemorySegment].
 ///
@@ -49,28 +49,9 @@ public final class ScxFFI {
         return createFFI(clazz, libraryLookup(libraryPath, global()));
     }
 
-    /// 方法在创建时就会全部绑定
     public static <T> T createFFI(Class<T> clazz, SymbolLookup symbolLookup) {
         // 这里 newProxyInstance 会验证 clazz 是否是接口, 所以我们在 FFMProxy 中无需校验
         return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, new FFMProxy(clazz, symbolLookup));
-    }
-
-    public static <T> T createFFILazy(Class<T> clazz) {
-        return createFFILazy(clazz, nativeLinker().defaultLookup());
-    }
-
-    public static <T> T createFFILazy(Class<T> clazz, String libraryName) {
-        return createFFILazy(clazz, libraryLookup(libraryName, global()));
-    }
-
-    public static <T> T createFFILazy(Class<T> clazz, Path libraryPath) {
-        return createFFILazy(clazz, libraryLookup(libraryPath, global()));
-    }
-
-    /// 方法会在第一次调用时才绑定
-    public static <T> T createFFILazy(Class<T> clazz, SymbolLookup symbolLookup) {
-        // 这里 newProxyInstance 会验证 clazz 是否是接口, 所以我们在 FFMProxy 中无需校验
-        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, new FFMProxyLazy(symbolLookup));
     }
 
 }

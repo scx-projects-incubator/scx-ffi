@@ -17,36 +17,28 @@ import static dev.scx.ffi.mapper.struct.FFIStructSupport.createNode;
 /// @version 0.0.1
 public final class FFIStructFFMMapper implements FFMMapper {
 
-    private final Object ffiStruct;
+    private final FFIStruct ffiStruct;
     private final Node node;
     private final MemoryLayout memoryLayout;
 
     public FFIStructFFMMapper(FFIStruct ffiStruct) {
         this.ffiStruct = ffiStruct;
-        // 1, 创建 树形结构 (这里必然是 StructNode)
+        // 1, 创建 当前 ffiStruct 的树形结构表达
         this.node = createNode(ffiStruct.getClass());
         // 2, 创建 内存布局
         this.memoryLayout = this.node.createMemoryLayout();
     }
 
     @Override
-    public MemorySegment toMemorySegment(Arena arena) {
+    public MemorySegment toMemorySegment(Arena arena) throws IllegalAccessException {
         var memorySegment = arena.allocate(memoryLayout);
-        try {
-            node.writeToMemorySegment(memorySegment, 0, ffiStruct);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("反射发生异常 !!!" + e);
-        }
+        node.writeToMemorySegment(memorySegment, 0, ffiStruct);
         return memorySegment;
     }
 
     @Override
-    public void fromMemorySegment(MemorySegment memorySegment) {
-        try {
-            node.readFromMemorySegment(memorySegment, 0, ffiStruct);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("反射发生异常 !!!" + e);
-        }
+    public void fromMemorySegment(MemorySegment memorySegment) throws IllegalAccessException {
+        node.readFromMemorySegment(memorySegment, 0, ffiStruct);
     }
 
 }
