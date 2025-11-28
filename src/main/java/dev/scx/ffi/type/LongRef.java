@@ -16,11 +16,11 @@ public final class LongRef {
         this.value = value;
     }
 
-    public long getValue() {
+    public long value() {
         return value;
     }
 
-    public void setValue(long value) {
+    public void value(long value) {
         this.value = value;
     }
 

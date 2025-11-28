@@ -16,11 +16,11 @@ public final class CharRef {
         this.value = value;
     }
 
-    public char getValue() {
+    public char value() {
         return value;
     }
 
-    public void setValue(char value) {
+    public void value(char value) {
         this.value = value;
     }
 

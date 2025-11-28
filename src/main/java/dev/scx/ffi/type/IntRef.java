@@ -16,11 +16,11 @@ public final class IntRef {
         this.value = value;
     }
 
-    public int getValue() {
+    public int value() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void value(int value) {
         this.value = value;
     }
 

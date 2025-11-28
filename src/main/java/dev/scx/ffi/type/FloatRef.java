@@ -16,11 +16,11 @@ public final class FloatRef {
         this.value = value;
     }
 
-    public float getValue() {
+    public float value() {
         return value;
     }
 
-    public void setValue(float value) {
+    public void value(float value) {
         this.value = value;
     }
 

@@ -16,11 +16,11 @@ public final class ShortRef {
         this.value = value;
     }
 
-    public short getValue() {
+    public short value() {
         return value;
     }
 
-    public void setValue(short value) {
+    public void value(short value) {
         this.value = value;
     }
 
