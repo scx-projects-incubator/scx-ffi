@@ -13,11 +13,11 @@ public interface FFMMapper {
     ///
     /// @param arena 作用域
     /// @return MemorySegment
-    MemorySegment toMemorySegment(Arena arena);
+    MemorySegment toMemorySegment(Arena arena) throws Exception;
 
     /// 从 MemorySegment (内存段) 设置值
     ///
     /// @param memorySegment a
-    void fromMemorySegment(MemorySegment memorySegment);
+    void fromMemorySegment(MemorySegment memorySegment) throws Exception;
 
 }
