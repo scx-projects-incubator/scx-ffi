@@ -146,7 +146,7 @@ final class FFMProxySupport {
     /// 转换成 (基本类型 | MemorySegment | FFMMapper) 三种
     public static Object convertToParameter(Object o) throws IllegalAccessException {
         return switch (o) {
-            // 1, 基本值 (FFM 能够直接处理, 无需转换)
+            // 1, 基本类型 (FFM 能够直接处理, 无需转换)
             case Byte _,
                  Short _,
                  Integer _,
@@ -155,16 +155,9 @@ final class FFMProxySupport {
                  Double _,
                  Boolean _,
                  Character _ -> o;
-            // 2, 数组类型
-            case byte[] c -> new ByteArrayFFMMapper(c);
-            case short[] c -> new ShortArrayFFMMapper(c);
-            case int[] c -> new IntArrayFFMMapper(c);
-            case long[] c -> new LongArrayFFMMapper(c);
-            case float[] c -> new FloatArrayFFMMapper(c);
-            case double[] c -> new DoubleArrayFFMMapper(c);
-            case boolean[] c -> new BooleanArrayFFMMapper(c);
-            case char[] c -> new CharArrayFFMMapper(c);
-            // 3, 内置 Ref
+            // 2, 内存段 (FFM 能够直接处理, 无需转换)
+            case MemorySegment _ -> o;
+            // 3, 基本类型引用
             case ByteRef r -> new ByteRefFFMMapper(r);
             case ShortRef r -> new ShortRefFFMMapper(r);
             case IntRef r -> new IntRefFFMMapper(r);
@@ -176,18 +169,25 @@ final class FFMProxySupport {
             // 4, 字符串
             case String s -> new StringFFMMapper(s);
             case StringRef r -> new StringRefFFMMapper(r);
-            // 5, 内存段 (FFM 能够直接处理, 无需转换)
-            case MemorySegment _ -> o;
-            // 6, Callback 类型
-            case FFICallback c -> new FFICallbackFFMMapper(c);
-            // 7, 结构体
+            // 5, 基本类型数组
+            case byte[] c -> new ByteArrayFFMMapper(c);
+            case short[] c -> new ShortArrayFFMMapper(c);
+            case int[] c -> new IntArrayFFMMapper(c);
+            case long[] c -> new LongArrayFFMMapper(c);
+            case float[] c -> new FloatArrayFFMMapper(c);
+            case double[] c -> new DoubleArrayFFMMapper(c);
+            case boolean[] c -> new BooleanArrayFFMMapper(c);
+            case char[] c -> new CharArrayFFMMapper(c);
+            // 6, 结构体
             case FFIStruct c -> new FFIStructFFMMapper(c);
-            // 8, 映射类型
+            // 7, 回调
+            case FFICallback c -> new FFICallbackFFMMapper(c);
+            // 8, 自定义映射
             case FFMMapper m -> m;
             // 9, 空值
             case null -> MemorySegment.NULL;
             // 其余抛异常
-            default -> throw new IllegalArgumentException("无法转换的类型 !!! " + o.getClass());
+            default -> throw new IllegalArgumentException("无法转换的类型 : " + o.getClass());
         };
     }
 
@@ -197,11 +197,11 @@ final class FFMProxySupport {
         if (objs == null) {
             return new Object[0];
         }
-        var result = new Object[objs.length];
+        var parameters = new Object[objs.length];
         for (var i = 0; i < objs.length; i = i + 1) {
-            result[i] = convertToParameter(objs[i]);
+            parameters[i] = convertToParameter(objs[i]);
         }
-        return result;
+        return parameters;
     }
 
     /// 创建 FFMMethodHandle
