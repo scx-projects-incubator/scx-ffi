@@ -141,9 +141,9 @@ final class FFMProxySupport {
     }
 
     /// 转换成 (基本类型 | MemorySegment | FFMMapper) 三种
-    public static Object convertToParameter(Object o) throws IllegalAccessException {
+    public static Object wrapParameter(Object o) throws IllegalAccessException {
         return switch (o) {
-            // 1, 基本类型 (FFM 能够直接处理, 无需转换)
+            // 1, 基本类型 (FFM 能够直接处理, 无需包装)
             case Byte _,
                  Short _,
                  Integer _,
@@ -152,7 +152,7 @@ final class FFMProxySupport {
                  Double _,
                  Boolean _,
                  Character _ -> o;
-            // 2, 内存段 (FFM 能够直接处理, 无需转换)
+            // 2, 内存段 (FFM 能够直接处理, 无需包装)
             case MemorySegment _ -> o;
             // 3, 基本类型引用
             case ByteRef r -> new ByteRefFFMMapper(r);
@@ -189,32 +189,44 @@ final class FFMProxySupport {
     }
 
     /// 转换成 (基本类型 | MemorySegment | FFMMapper) 三种
-    public static Object[] convertToParameters(Object[] objs) throws IllegalAccessException {
+    public static Object[] wrapParameters(Object[] objs) throws IllegalAccessException {
         // 针对 null 做防御处理
         if (objs == null) {
             return new Object[0];
         }
         var parameters = new Object[objs.length];
         for (var i = 0; i < objs.length; i = i + 1) {
-            parameters[i] = convertToParameter(objs[i]);
+            parameters[i] = wrapParameter(objs[i]);
         }
         return parameters;
     }
 
-    /// 这里因为是内部调用 我们假定 parameters 一定是 convertToParameters 的返回值.
+    /// 这里因为是内部调用 我们假定 wrappedParameters 一定是 wrapParameters 的返回值.
     /// 转换成 (基本类型 | MemorySegment) 两种
-    public static Object[] convertToNativeParameters(Object[] parameters, Arena arena) {
-        var nativeParameters = new Object[parameters.length];
-        for (var i = 0; i < parameters.length; i = i + 1) {
-            var parameter = parameters[i];
-            if (parameter instanceof FFMMapper ffmMapper) {
+    public static Object[] prepareNativeParameters(Object[] wrappedParameters, Arena arena) {
+        var nativeParameters = new Object[wrappedParameters.length];
+        for (var i = 0; i < wrappedParameters.length; i = i + 1) {
+            var wrappedParameter = wrappedParameters[i];
+            if (wrappedParameter instanceof FFMMapper ffmMapper) {
                 nativeParameters[i] = ffmMapper.toMemorySegment(arena);
             } else {
                 //这里只剩下 基本类型 | MemorySegment, 能够直接使用.
-                nativeParameters[i] = parameter;
+                nativeParameters[i] = wrappedParameter;
             }
         }
         return nativeParameters;
+    }
+
+    /// 回写参数
+    public static void writeBackParameters(Object[] wrappedParameters, Object[] nativeParameters) {
+        for (int i = 0; i < wrappedParameters.length; i = i + 1) {
+            var wrappedParameter = wrappedParameters[i];
+            var nativeParameter = nativeParameters[i];
+            // 只回写 FFMMapper
+            if (wrappedParameter instanceof FFMMapper ffmMapper && nativeParameter instanceof MemorySegment memorySegment) {
+                ffmMapper.fromMemorySegment(memorySegment);
+            }
+        }
     }
 
     /// 创建 FFMMethodHandle
