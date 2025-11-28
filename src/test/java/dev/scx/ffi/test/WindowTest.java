@@ -27,17 +27,21 @@ public class WindowTest {
             return true;
         }, 0);
 
-        System.out.println(list);
+        for (WindowInfo windowInfo : list) {
+            System.out.println(windowInfo.toString());
+        }
     }
 
     public static String getWindowTitle(MemorySegment hWnd) {
-        int l = USER32.GetWindowTextLengthW(hWnd);
-        var chars = new char[l];
-        int l1 = USER32.GetWindowTextW(hWnd, chars, l + 1);
+        // 这里测试 A 函数
+        int l = USER32.GetWindowTextLengthA(hWnd);
+        var chars = new byte[l];
+        int l1 = USER32.GetWindowTextA(hWnd, chars, l );
         return new String(chars, 0, l1);
     }
 
     public static String getWindowClassName(MemorySegment hWnd) {
+        // 这里测试 W 函数
         var chars = new char[512];
         int l1 = USER32.GetClassNameW(hWnd, chars, 512);
         return new String(chars, 0, l1);
@@ -48,7 +52,14 @@ public class WindowTest {
                              String title,
                              boolean isVisible,
                              MemorySegment threadProcessId) {
-
+        @Override
+        public String toString() {
+            return "WindowInfo{" +
+                "className='" + className + '\'' +
+                ", title='" + title + '\'' +
+                ", isVisible=" + isVisible +
+                '}';
+        }
     }
 
 }

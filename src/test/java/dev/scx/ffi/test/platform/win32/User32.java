@@ -27,9 +27,15 @@ public interface User32 {
 
     int GetWindowTextLengthW(MemorySegment hWnd);
 
+    int GetWindowTextLengthA(MemorySegment hWnd);
+
     int GetClassNameW(MemorySegment hWnd, char[] lpClassName, int nMaxCount);
 
+    int GetClassNameA(MemorySegment hWnd, byte[] lpClassName, int nMaxCount);
+
     int GetWindowTextW(MemorySegment hWnd, char[] lpString, int nMaxCount);
+
+    int GetWindowTextA(MemorySegment hWnd, byte[] lpString, int nMaxCount);
 
     MemorySegment GetWindowThreadProcessId(MemorySegment hWnd, MemorySegment lpdwProcessId);
 
