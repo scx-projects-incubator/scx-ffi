@@ -7,7 +7,7 @@ import java.util.List;
 /// Node 创建上下文
 final class NodeCreateContext {
 
-    public List<TypeInfo> chain;
+    private final List<TypeInfo> chain;
 
     public NodeCreateContext() {
         this.chain = new ArrayList<>();
